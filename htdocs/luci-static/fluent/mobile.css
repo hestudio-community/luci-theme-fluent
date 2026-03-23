@@ -1,0 +1,226 @@
+/*!
+ * LuCI Fluent UI 2 Theme - Mobile Styles
+ * Responsive layout for screens <= 768px
+ */
+
+/* ==========================================================================
+   Baseline Mobile Fallbacks
+   ========================================================================== */
+
+.fluent-nav {
+	transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.fluent-nav.mobile-open {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
+}
+
+.container {
+	padding: 12px;
+}
+
+.cbi-value label.cbi-value-title {
+	padding-bottom: 4px;
+}
+
+.table .th,
+.table .td {
+	padding: 8px;
+	font-size: 12px;
+}
+
+.cbi-page-actions {
+	padding: 12px;
+	text-align: center;
+}
+
+.modal {
+	padding: 16px;
+}
+
+.breadcrumb {
+	font-size: 12px;
+}
+
+.network-status-table .ifacebox {
+	margin: 4px 0;
+}
+
+.zone-forwards > span {
+	margin: 8px 0;
+}
+
+.fluent-footer {
+	padding: 12px;
+}
+
+/* Sidebar becomes off-canvas on mobile */
+.fluent-nav {
+	transform: translateX(-100%);
+	transition: transform var(--durationNormal) var(--curveDecelerateMid);
+	box-shadow: none;
+}
+
+.fluent-nav.mobile-open {
+	transform: translateX(0);
+	box-shadow: var(--shadow16);
+}
+
+.fluent-main {
+	margin-left: 0 !important;
+}
+
+body.sidebar-collapsed .fluent-main {
+	margin-left: 0;
+}
+
+.fluent-topbar .mobile-only {
+	display: flex !important;
+}
+
+/* Hide desktop hamburger on mobile */
+.fluent-nav-header > .fluent-hamburger {
+	display: none;
+}
+
+/* Container */
+.container {
+	padding: var(--spacingHorizontalM);
+}
+
+/* CBI values stack vertically */
+.cbi-value {
+	flex-direction: column;
+}
+
+.cbi-value label.cbi-value-title {
+	text-align: left;
+	flex: none;
+	width: 100%;
+	padding-bottom: 4px;
+}
+
+.cbi-value-field {
+	margin-left: 0;
+	width: 100%;
+}
+
+/* Inputs full width */
+input,
+textarea,
+select,
+.cbi-select,
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	width: 100% !important;
+	max-width: 100%;
+}
+
+.cbi-dynlist {
+	min-width: 0;
+	max-width: 100%;
+	width: 100% !important;
+}
+
+/* Tables scroll horizontally */
+.table {
+	display: block;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.table .tr {
+	display: table-row;
+}
+
+.table .th, .table .td {
+	padding: var(--spacingHorizontalS);
+	font-size: var(--fontSizeBase200);
+}
+
+/* Tabs scroll */
+.tabs, .cbi-tabmenu {
+	overflow-x: auto;
+	flex-wrap: nowrap;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar, .cbi-tabmenu::-webkit-scrollbar {
+	display: none;
+}
+
+.tabs > li, .cbi-tabmenu > li {
+	max-width: none;
+	flex-shrink: 0;
+}
+
+/* Actions */
+.cbi-page-actions {
+	padding: var(--spacingHorizontalM);
+	text-align: center;
+}
+
+.cbi-page-actions > * {
+	margin: 4px;
+}
+
+.cbi-page-actions > :not([method="post"]):not(.cbi-button-apply):not(.cbi-button-negative):not(.cbi-button-save):not(.cbi-button-reset) {
+	float: none;
+}
+
+/* Modal full width */
+.modal {
+	width: 95%;
+	margin: 2em auto;
+	padding: var(--spacingHorizontalL);
+}
+
+/* Breadcrumb */
+.breadcrumb {
+	font-size: var(--fontSizeBase200);
+}
+
+/* Section actions */
+.td.cbi-section-actions {
+	width: auto;
+}
+
+.td.cbi-section-actions > * {
+	flex-wrap: wrap;
+}
+
+/* Network status */
+.network-status-table {
+	flex-direction: column;
+}
+
+.network-status-table .ifacebox {
+	margin: var(--spacingHorizontalXS) 0;
+}
+
+/* Zone forwards */
+.zone-forwards {
+	flex-direction: column;
+}
+
+.zone-forwards > span {
+	transform: rotate(90deg);
+	margin: var(--spacingHorizontalS) 0;
+}
+
+/* Footer */
+.fluent-footer {
+	text-align: center;
+	padding: var(--spacingHorizontalM);
+}
+
+/* Section create */
+.cbi-section-create {
+	flex-direction: column;
+}
+
+/* Assoclist */
+.assoclist .td:nth-of-type(3),
+.assoclist .td:nth-of-type(5) {
+	width: auto;
+}
