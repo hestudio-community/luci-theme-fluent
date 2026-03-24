@@ -66,32 +66,56 @@ return baseclass.extend({
 
 	renderTabMenu(tree, url, level) {
 		const container = document.querySelector('#tabmenu');
-		const ul = E('ul', { 'class': 'tabs' });
+		const tabs = document.createElement('fluent-tabs');
 		const children = ui.menu.getChildren(tree);
 		let activeNode = null;
+		let activeId = null;
+		let index = 0;
+
+		tabs.className = 'fluent-content-tabs';
+		tabs.setAttribute('appearance', 'subtle');
+		tabs.setAttribute('size', 'small');
 
 		children.forEach(child => {
 			const isActive = (L.env.dispatchpath[3 + (level || 0)] == child.name);
-			const activeClass = isActive ? ' active' : '';
-			const className = 'tabmenu-item-%s %s'.format(child.name, activeClass);
+			const tabId = 'content-tab-%s-%s'.format(level || 0, index++);
+			const tab = document.createElement('fluent-tab');
+			const panel = document.createElement('fluent-tab-panel');
 
-			ul.appendChild(E('li', { 'class': className }, [
-				E('a', { 'href': L.url(url, child.name) }, [ _(child.title) ] )]));
+			tab.id = tabId;
+			tab.setAttribute('slot', 'tab');
+			tab.textContent = _(child.title);
+			tab.addEventListener('click', () => {
+				window.location.href = L.url(url, child.name);
+			});
+
+			panel.setAttribute('slot', 'tabpanel');
+			panel.className = 'fluent-tab-panel-proxy';
+			panel.hidden = true;
+
+			tabs.appendChild(tab);
+			tabs.appendChild(panel);
+
+			if (isActive)
+				activeId = tabId;
 
 			if (isActive)
 				activeNode = child;
 		});
 
-		if (ul.children.length == 0)
+		if (!tabs.querySelector('fluent-tab'))
 			return E([]);
 
-		container.appendChild(ul);
+		if (activeId)
+			tabs.setAttribute('activeid', activeId);
+
+		container.appendChild(tabs);
 		container.style.display = '';
 
 		if (activeNode)
 			this.renderTabMenu(activeNode, url + '/' + activeNode.name, (level || 0) + 1);
 
-		return ul;
+		return tabs;
 	},
 
 	getMenuIcon(name) {
@@ -116,72 +140,86 @@ return baseclass.extend({
 	},
 
 	renderMainMenu(tree, url, level) {
-		const ul = level ? E('ul', { 'class': 'nav-submenu' }) : document.querySelector('#topmenu');
+		const root = level ? document.createDocumentFragment() : document.querySelector('#topmenu');
 		const children = ui.menu.getChildren(tree);
 
 		if (children.length == 0 || level > 1)
 			return E([]);
 
+		if (!level)
+			root.replaceChildren();
+
 		children.forEach(child => {
 			const submenu = this.renderMainMenu(child, url + '/' + child.name, (level || 0) + 1);
 			const isActive = L.env.dispatchpath.length > (level || 0) + 1 &&
 				L.env.dispatchpath[(level || 0) + 1] == child.name;
-			const hasSubmenu = submenu.firstElementChild;
-			const isOpen = isActive && hasSubmenu;
+			const item = document.createElement('fluent-tree-item');
+			const hasSubmenu = submenu && submenu.childNodes && submenu.childNodes.length > 0;
 
-			const li = E('li', { 'class': 'nav-item' + (isActive ? ' active' : '') + (isOpen ? ' open' : '') });
+			item.className = 'fluent-nav-item' + (isActive ? ' active' : '');
+			item.setAttribute('slot', 'item');
+			item.textContent = _(child.title);
 
-			if (!level) {
-				const iconHtml = this.getMenuIcon(child.name);
-				const link = E('a', {
-					'class': 'nav-link' + (isActive ? ' active' : ''),
-					'href': hasSubmenu ? '#' : L.url(url, child.name),
-					'click': hasSubmenu ? (ev) => {
-						ev.preventDefault();
-						li.classList.toggle('open');
-					} : null
-				}, []);
-				link.innerHTML =
-					'<span class="nav-icon">' + iconHtml + '</span>' +
-					'<span class="nav-text">' + _(child.title) + '</span>' +
-					(hasSubmenu ? '<span class="nav-arrow"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M7.65 4.15c.2-.2.5-.2.7 0l5.49 5.46c.21.22.21.57 0 .78l-5.49 5.46a.5.5 0 01-.7-.7L12.79 10 7.65 4.85a.5.5 0 010-.7z"/></svg></span>' : '');
-				li.appendChild(link);
-			} else {
-				li.appendChild(E('a', {
-					'class': 'nav-sublink' + (isActive ? ' active' : ''),
-					'href': L.url(url, child.name)
-				}, [ _(child.title) ]));
+			if (hasSubmenu && isActive)
+				item.setAttribute('expanded', '');
+
+			if (!hasSubmenu) {
+				item.addEventListener('click', () => {
+					window.location.href = L.url(url, child.name);
+				});
 			}
 
 			if (hasSubmenu)
-				li.appendChild(submenu);
+				item.appendChild(submenu);
 
-			ul.appendChild(li);
+			root.appendChild(item);
 		});
 
-		ul.style.display = '';
+		if (!level)
+			root.style.display = '';
 
-		return ul;
+		return root;
 	},
 
 	renderModeMenu(tree) {
-		const ul = document.querySelector('#modemenu');
+		const tabs = document.querySelector('#modemenu');
 		const children = ui.menu.getChildren(tree);
+		let activeId = null;
 
+		tabs.replaceChildren();
 		children.forEach((child, index) => {
 			const isActive = L.env.requestpath.length
 				? child.name === L.env.requestpath[0]
 				: index === 0;
+			const tabId = 'mode-tab-%s'.format(index);
+			const tab = document.createElement('fluent-tab');
+			const panel = document.createElement('fluent-tab-panel');
 
-			ul.appendChild(E('li', { 'class': isActive ? 'active' : '' }, [
-				E('a', { 'href': L.url(child.name) }, [ _(child.title) ])
-			]));
+			tab.id = tabId;
+			tab.setAttribute('slot', 'tab');
+			tab.textContent = _(child.title);
+			tab.addEventListener('click', () => {
+				window.location.href = L.url(child.name);
+			});
+
+			panel.setAttribute('slot', 'tabpanel');
+			panel.className = 'fluent-tab-panel-proxy';
+			panel.hidden = true;
+
+			tabs.appendChild(tab);
+			tabs.appendChild(panel);
+
+			if (isActive)
+				activeId = tabId;
 
 			if (isActive)
 				this.renderMainMenu(child, child.name);
 		});
 
-		if (ul.children.length > 1)
-			ul.style.display = '';
+		if (activeId)
+			tabs.setAttribute('activeid', activeId);
+
+		if (children.length > 1)
+			tabs.style.display = '';
 	}
 });

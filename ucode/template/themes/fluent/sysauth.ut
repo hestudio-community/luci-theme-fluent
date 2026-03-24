@@ -5,42 +5,54 @@
 
 {% include('header', { blank_page: true }) %}
 
-<section hidden>
-	<form method="post" class="cbi-map">
-		<div class="cbi-section">
-			<div class="cbi-section-node">
-				<div class="cbi-value">
-					<label class="cbi-value-title" for="luci_username">{{ _('Username') }}</label>
-					<div class="cbi-value-field">
-						<input name="luci_username" id="luci_username" type="text" autocomplete="username" value="{{ entityencode(duser, true) }}">
-					</div>
-				</div>
-				<div class="cbi-value">
-					<label class="cbi-value-title" for="luci_password">{{ _('Password') }}</label>
-					<div class="cbi-value-field">
-						<input name="luci_password" id="luci_password" type="password" autocomplete="current-password">
-					</div>
-				</div>
+<div class="fluent-auth-shell">
+	<div class="fluent-auth-backdrop"></div>
+	<div class="fluent-auth-card">
+		<div class="fluent-auth-brand">
+			<img src="{{ media }}/logo.svg" alt="Logo" class="brand-logo">
+			<div>
+				<h1>LuCI</h1>
+				<p>{{ _('OpenWrt configuration interface') }}</p>
 			</div>
 		</div>
-	</form>
 
-	<hr>
+		{% if (fuser): %}
+		<div class="alert-message error">
+			{{ _('Invalid username and/or password! Please try again.') }}
+		</div>
+		{% endif %}
 
-	{% if (fuser): %}
-	<div class="alert-message error">
-		{{ _('Invalid username and/or password! Please try again.') }}
+		<form method="post" class="fluent-auth-form" id="sysauth-form">
+			<div class="fluent-auth-field">
+				<label for="luci_username">{{ _('Username') }}</label>
+				<fluent-text-input
+					id="luci_username"
+					name="luci_username"
+					type="text"
+					placeholder="{{ _('Username') }}"
+					autocomplete="username"
+					value="{{ entityencode(duser, true) }}"></fluent-text-input>
+			</div>
+
+			<div class="fluent-auth-field">
+				<label for="luci_password">{{ _('Password') }}</label>
+				<fluent-text-input
+					id="luci_password"
+					name="luci_password"
+					type="password"
+					placeholder="{{ _('Password') }}"
+					autocomplete="current-password"></fluent-text-input>
+			</div>
+
+			<fluent-button appearance="accent" type="submit" id="login-submit">
+				{{ _('Log in') }}
+			</fluent-button>
+		</form>
 	</div>
-	{% endif %}
 
-	<button class="btn cbi-button-positive important">{{ _('Log in') }}</button>
-</section>
-
-<div id="view">
-	<div class="spinning">{{ _('Loading view…') }}</div>
 	<script>
-		L.require('ui').then(function(ui) {
-			ui.instantiateView('fluent.sysauth');
+		L.require('view.fluent.sysauth').then(function(view) {
+			view.init();
 		});
 	</script>
 </div>

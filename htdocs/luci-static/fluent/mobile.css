@@ -224,3 +224,12 @@ select,
 .assoclist .td:nth-of-type(5) {
 	width: auto;
 }
+
+.fluent-auth-card {
+	padding: 22px;
+	border-radius: 18px;
+}
+
+.fluent-auth-brand {
+	align-items: flex-start;
+}

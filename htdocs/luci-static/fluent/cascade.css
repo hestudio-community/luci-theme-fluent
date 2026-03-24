@@ -3822,3 +3822,240 @@ div.cbi-value var.cbi-tooltip-container,
 	background: var(--colorBrandBackground);
 	color: var(--colorNeutralForegroundOnBrand);
 }
+
+/* ==========================================================================
+   Fluent Web Components Host Layer
+   ========================================================================== */
+
+fluent-button,
+fluent-anchor-button,
+fluent-text-input,
+fluent-textarea,
+fluent-dropdown,
+fluent-switch,
+fluent-checkbox,
+fluent-tabs,
+fluent-tab,
+fluent-tab-panel,
+fluent-tree,
+fluent-tree-item,
+fluent-badge,
+fluent-divider,
+fluent-dialog {
+	box-sizing: border-box;
+}
+
+.fluent-native-proxy {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	border: 0 !important;
+	opacity: 0 !important;
+	overflow: hidden !important;
+	pointer-events: none !important;
+}
+
+.fluent-hidden-decorator {
+	display: none !important;
+}
+
+.fluent-enhanced-control {
+	display: block;
+	width: 100%;
+}
+
+.fluent-enhanced-control > fluent-text-input,
+.fluent-enhanced-control > fluent-textarea,
+.fluent-enhanced-control > fluent-dropdown {
+	display: block;
+	width: 100%;
+}
+
+.fluent-enhanced-control.is-invalid {
+	outline: 2px solid var(--colorStatusDangerStroke1);
+	outline-offset: 2px;
+	border-radius: var(--borderRadiusLarge);
+}
+
+.fluent-button-proxy {
+	display: inline-flex;
+	align-items: center;
+}
+
+.fluent-button-proxy > fluent-button,
+.fluent-button-proxy > fluent-anchor-button {
+	min-width: 0;
+}
+
+.fluent-indicators {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--spacingHorizontalS);
+}
+
+#indicators > span {
+	display: inline-flex;
+	align-items: center;
+}
+
+#indicators > span.inactive fluent-badge {
+	opacity: 0.75;
+}
+
+.fluent-menu-tree {
+	display: block;
+	width: 100%;
+	padding: var(--spacingHorizontalS);
+}
+
+.fluent-nav-item {
+	cursor: pointer;
+}
+
+.fluent-mode-tabs,
+.fluent-content-tabs,
+.fluent-tabs-proxy {
+	display: block;
+	width: 100%;
+}
+
+.fluent-tab-panel-proxy {
+	display: none;
+}
+
+.fluent-native-tabs {
+	margin-top: 0 !important;
+}
+
+.fluent-topbar {
+	display: flex;
+	align-items: center;
+	gap: var(--spacingHorizontalL);
+}
+
+.fluent-topbar > fluent-tabs {
+	flex: 1;
+	min-width: 0;
+}
+
+.fluent-nav-header > fluent-button,
+.fluent-topbar > fluent-button {
+	flex: 0 0 auto;
+}
+
+.fluent-footer {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacingHorizontalM);
+}
+
+.fluent-footer > fluent-divider {
+	width: 100%;
+}
+
+.modal > fluent-dialog.fluent-runtime-dialog {
+	display: block;
+	width: min(720px, calc(100vw - 32px));
+	max-width: 100%;
+	padding: var(--spacingHorizontalL);
+	background: transparent;
+}
+
+.modal > fluent-dialog.fluent-runtime-dialog > h4:first-child {
+	margin-bottom: var(--spacingHorizontalM);
+	font-size: var(--fontSizeBase500);
+	line-height: var(--lineHeightBase500);
+}
+
+.modal > fluent-dialog.fluent-runtime-dialog > .button-row,
+.modal > fluent-dialog.fluent-runtime-dialog > .right {
+	margin-top: var(--spacingHorizontalL);
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--spacingHorizontalS);
+}
+
+.fluent-auth-shell {
+	position: relative;
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	padding: 32px 16px;
+	background:
+		radial-gradient(circle at top left, rgba(15, 108, 189, 0.16), transparent 28%),
+		radial-gradient(circle at bottom right, rgba(15, 108, 189, 0.14), transparent 32%),
+		linear-gradient(160deg, var(--colorNeutralBackground3), var(--colorNeutralBackground1));
+}
+
+.fluent-auth-backdrop {
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(120deg, rgba(255, 255, 255, 0.15), transparent 45%),
+		linear-gradient(300deg, rgba(15, 108, 189, 0.08), transparent 55%);
+	pointer-events: none;
+}
+
+.fluent-auth-card {
+	position: relative;
+	z-index: 1;
+	width: min(420px, 100%);
+	padding: 28px;
+	border-radius: 24px;
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 88%, transparent);
+	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 65%, transparent);
+	box-shadow: var(--shadow28);
+	backdrop-filter: blur(18px);
+}
+
+:root[data-darkmode="true"] .fluent-auth-card {
+	background: color-mix(in srgb, var(--colorNeutralBackground2) 86%, transparent);
+}
+
+.fluent-auth-brand {
+	display: flex;
+	align-items: center;
+	gap: var(--spacingHorizontalL);
+	margin-bottom: 24px;
+}
+
+.fluent-auth-brand h1 {
+	font-size: 28px;
+	line-height: 1.15;
+	margin-bottom: 4px;
+}
+
+.fluent-auth-brand p {
+	color: var(--colorNeutralForeground3);
+}
+
+.fluent-auth-form {
+	display: grid;
+	gap: 18px;
+}
+
+.fluent-auth-field {
+	display: grid;
+	gap: 8px;
+}
+
+.fluent-auth-field > label {
+	font-size: var(--fontSizeBase300);
+	font-weight: var(--fontWeightSemibold);
+	color: var(--colorNeutralForeground2);
+}
+
+.fluent-auth-field > fluent-text-input {
+	width: 100%;
+}
+
+.fluent-auth-form > fluent-button {
+	margin-top: 8px;
+	width: 100%;
+}
+
+body.auth-submitting .fluent-auth-form {
+	pointer-events: none;
+}

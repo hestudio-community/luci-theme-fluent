@@ -1,0 +1,13 @@
+{
+  "name": "luci-theme-fluent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch"
+  },
+  "devDependencies": {
+    "@fluentui/web-components": "3.0.0-rc.5",
+    "esbuild": "^0.25.1"
+  }
+}

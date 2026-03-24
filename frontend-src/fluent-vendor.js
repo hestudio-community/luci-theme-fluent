@@ -1,0 +1,17 @@
+import '@fluentui/web-components/anchor-button.js';
+import '@fluentui/web-components/badge.js';
+import '@fluentui/web-components/button.js';
+import '@fluentui/web-components/checkbox.js';
+import '@fluentui/web-components/dialog.js';
+import '@fluentui/web-components/divider.js';
+import '@fluentui/web-components/dropdown.js';
+import '@fluentui/web-components/message-bar.js';
+import '@fluentui/web-components/option.js';
+import '@fluentui/web-components/switch.js';
+import '@fluentui/web-components/tab-panel.js';
+import '@fluentui/web-components/tab.js';
+import '@fluentui/web-components/tabs.js';
+import '@fluentui/web-components/textarea.js';
+import '@fluentui/web-components/text-input.js';
+import '@fluentui/web-components/tree-item.js';
+import '@fluentui/web-components/tree.js';

@@ -41,6 +41,8 @@
 		{% endif %}
 		<script src="{{ dispatcher.build_url('admin/translations', dispatcher.lang) }}"></script>
 		<script src="{{ resource }}/cbi.js"></script>
+		<script src="{{ media }}/vendor/web-components.min.js"></script>
+		<script src="{{ media }}/bundle.js"></script>
 	</head>
 
 	<body class="lang_{{ dispatcher.lang }} {{ entityencode(striptags(node?.title ?? ''), true) }}" data-page="{{ entityencode(join('-', ctx.request_path), true) }}">
@@ -48,15 +50,15 @@
 		<div class="fluent-layout">
 			<aside class="fluent-nav" id="sidebar">
 				<div class="fluent-nav-header">
-					<button type="button" class="fluent-hamburger" id="menu-toggle" aria-label="Toggle menu">
+					<fluent-button appearance="subtle" class="fluent-hamburger" id="menu-toggle" aria-label="Toggle menu">
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M2 4.5h16a.5.5 0 010 1H2a.5.5 0 010-1zm0 5h16a.5.5 0 010 1H2a.5.5 0 010-1zm0 5h16a.5.5 0 010 1H2a.5.5 0 010-1z"/></svg>
-					</button>
+					</fluent-button>
 					<a class="brand" href="/">
 						<img src="{{ media }}/logo.svg" alt="Logo" class="brand-logo">
 						<span class="brand-text">{{ striptags(boardinfo.hostname ?? '?') }}</span>
 					</a>
 				</div>
-				<ul class="nav" id="topmenu" style="display:none"></ul>
+				<fluent-tree id="topmenu" class="fluent-menu-tree" style="display:none"></fluent-tree>
 				<div class="fluent-nav-footer">
 					<div id="indicators" class="fluent-indicators"></div>
 				</div>
@@ -64,10 +66,10 @@
 
 			<div class="fluent-main">
 				<header class="fluent-topbar">
-					<button type="button" class="fluent-hamburger mobile-only" id="menu-toggle-mobile" aria-label="Toggle menu">
+					<fluent-button appearance="subtle" type="button" class="fluent-hamburger mobile-only" id="menu-toggle-mobile" aria-label="Toggle menu">
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M2 4.5h16a.5.5 0 010 1H2a.5.5 0 010-1zm0 5h16a.5.5 0 010 1H2a.5.5 0 010-1zm0 5h16a.5.5 0 010 1H2a.5.5 0 010-1z"/></svg>
-					</button>
-					<ul class="breadcrumb" id="modemenu" style="display:none"></ul>
+					</fluent-button>
+					<fluent-tabs id="modemenu" class="fluent-mode-tabs" appearance="subtle" size="small" style="display:none"></fluent-tabs>
 				</header>
 
 				<div id="maincontent" class="container">
