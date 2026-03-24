@@ -125,6 +125,42 @@
 		control.value = selectedValue;
 	}
 
+	function getClassInstance(node) {
+		return window.DOM?.findClassInstance?.(node) ?? null;
+	}
+
+	function getDropdownItems(dropdown) {
+		return Array.from(dropdown.querySelector('ul')?.children ?? []).filter((node) => node.tagName === 'LI');
+	}
+
+	function getDropdownItemValue(item) {
+		if (item.hasAttribute('placeholder'))
+			return '';
+
+		return item.getAttribute('data-value') ?? item.innerText.trim();
+	}
+
+	function getDropdownItemLabel(item) {
+		return item.innerText.trim();
+	}
+
+	function syncEnhancedDropdownValue(control, dropdown, attempt) {
+		const instance = getClassInstance(dropdown);
+		const selectedValue = instance?.getValue?.() ?? dropdown.value ?? '';
+		const expectedOptions = getDropdownItems(dropdown).length;
+		const controlOptions = control.options?.length ?? 0;
+
+		if (attempt == null)
+			attempt = 0;
+
+		if (attempt < 10 && (!control.listbox || controlOptions !== expectedOptions)) {
+			requestAnimationFrame(() => syncEnhancedDropdownValue(control, dropdown, attempt + 1));
+			return;
+		}
+
+		control.value = selectedValue;
+	}
+
 	function triggerLinkActivation(link) {
 		if (!link)
 			return;
@@ -367,65 +403,83 @@
 	}
 
 	function enhanceCheckboxes(root, capabilities) {
-		if (!capabilities.switches)
+		return;
+	}
+
+	function enhanceDropdowns(root, capabilities) {
+		if (!capabilities.selects)
 			return;
 
-		queryAllIncludingSelf(root, '.cbi-checkbox > input[type="checkbox"]').forEach((input) => {
-			if (input.dataset.fluentEnhanced)
+		queryAllIncludingSelf(root, '.cbi-dropdown:not(.btn):not(.cbi-button)').forEach((dropdown) => {
+			if (dropdown.dataset.fluentEnhanced ||
+				dropdown.hasAttribute('multiple') ||
+				dropdown.querySelector('.create-item-input') ||
+				dropdown.closest('.cbi-dynlist'))
 				return;
 
-			const frame = input.parentElement;
-			let host = null;
+			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-select-control fluent-enhanced-dropdown-control' });
+			const control = create('fluent-dropdown', {
+				appearance: 'filled-lighter'
+			});
 
-			if (!frame)
-				return;
+			const syncHostLayout = () => {
+				host.style.width = dropdown.style.width || '';
+				host.style.minWidth = dropdown.style.minWidth || '';
+				host.style.maxWidth = dropdown.style.maxWidth || '';
+			};
 
-			try {
-				const control = create('fluent-switch', {
-					name: input.name || null
+			const rebuildOptions = () => {
+				const listbox = ensureDropdownListbox(control);
+
+				listbox.replaceChildren();
+
+				getDropdownItems(dropdown).forEach((item) => {
+					const label = getDropdownItemLabel(item);
+					const value = getDropdownItemValue(item);
+
+					if (!label && !item.hasAttribute('placeholder'))
+						return;
+
+					const option = create('fluent-option', {
+						value,
+						disabled: item.hasAttribute('unselectable') || item.hasAttribute('disabled')
+					}, label);
+
+					if (item.hasAttribute('selected'))
+						option.setAttribute('selected', '');
+
+					listbox.appendChild(option);
 				});
-				const proxyLabel = input.id ? frame.querySelector(`label[for="${input.id}"]`) : null;
-				const tooltip = frame.querySelector('.cbi-tooltip-container');
 
-				host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-switch-control' });
+				syncHostLayout();
+				syncBooleanAttr(control, 'disabled', dropdown.hasAttribute('disabled'));
+				updateInvalidState(dropdown, host);
+				syncEnhancedDropdownValue(control, dropdown);
+			};
 
-				const syncFromNative = () => {
-					control.checked = !!input.checked;
-					syncBooleanAttr(control, 'disabled', input.disabled);
-					updateInvalidState(input, host);
-				};
+			control.addEventListener('change', () => {
+				const instance = getClassInstance(dropdown);
+				const value = control.value ?? '';
 
-				control.addEventListener('change', () => {
-					input.checked = !!control.checked;
-					dispatch(input, 'click');
-					dispatch(input, 'change');
-				});
+				if (instance?.setValue)
+					instance.setValue(value);
 
-				input.addEventListener('change', syncFromNative);
-				new MutationObserver(syncFromNative).observe(input, {
-					attributes: true,
-					attributeFilter: ['class', 'disabled', 'checked']
-				});
+				rebuildOptions();
+			});
 
-				syncFromNative();
-				host.appendChild(control);
+			dropdown.addEventListener('cbi-dropdown-change', rebuildOptions);
+			new MutationObserver(rebuildOptions).observe(dropdown, {
+				attributes: true,
+				childList: true,
+				subtree: true,
+				attributeFilter: ['class', 'disabled', 'selected', 'data-value', 'placeholder', 'display', 'open']
+			});
 
-				if (tooltip)
-					frame.insertBefore(host, tooltip);
-				else
-					frame.appendChild(host);
-
-				hideNativeControl(input);
-
-				if (proxyLabel && !proxyLabel.textContent.trim())
-					proxyLabel.classList.add('fluent-hidden-decorator');
-
-				input.dataset.fluentEnhanced = 'true';
-			}
-			catch (error) {
-				host?.remove();
-				reportEnhancementError('checkbox', error, input);
-			}
+			dropdown.after(host);
+			host.appendChild(control);
+			rebuildOptions();
+			hideNativeControl(dropdown);
+			dropdown.dataset.fluentEnhanced = 'true';
 		});
 	}
 
@@ -457,6 +511,13 @@
 				}, (node.value || node.textContent || '').trim());
 
 				host = create('span', { class: 'fluent-button-proxy' });
+				Array.from(node.classList).forEach((className) => {
+					if (className === 'btn' ||
+						className === 'important' ||
+						className === 'primary' ||
+						className.startsWith('cbi-button'))
+						host.classList.add(`native-${className}`);
+				});
 
 				const syncFromNative = () => {
 					const nextVariant = resolveButtonVariant(node);
@@ -598,6 +659,7 @@
 		runEnhancer('text inputs', () => enhanceTextInputs(root, capabilities));
 		runEnhancer('textareas', () => enhanceTextareas(root, capabilities));
 		runEnhancer('selects', () => enhanceSelects(root, capabilities));
+		runEnhancer('dropdowns', () => enhanceDropdowns(root, capabilities));
 		runEnhancer('checkboxes', () => enhanceCheckboxes(root, capabilities));
 		runEnhancer('buttons', () => enhanceButtons(root, capabilities));
 		runEnhancer('tabs', () => enhanceTabLists(root));

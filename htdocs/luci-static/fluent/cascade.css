@@ -4248,3 +4248,211 @@ fluent-dialog {
 body.auth-submitting .fluent-auth-form {
 	pointer-events: none;
 }
+
+/* ==========================================================================
+   Fluent Runtime Overrides
+   ========================================================================== */
+
+.fluent-enhanced-dropdown-control {
+	width: 100%;
+}
+
+.fluent-enhanced-dropdown-control > fluent-dropdown {
+	width: 100%;
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	min-height: 36px;
+	padding: 0;
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 92%, var(--colorNeutralBackground3));
+	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 82%, transparent);
+	border-bottom-color: var(--colorNeutralStrokeAccessible);
+	border-radius: var(--borderRadiusLarge);
+	box-shadow: none;
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > ul {
+	align-items: stretch;
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > ul > li[display]:not([display="0"]),
+.cbi-dropdown:not(.btn):not(.cbi-button)[open] > ul.preview {
+	border-left: 0;
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > ul > li,
+.cbi-dropdown:not(.btn):not(.cbi-button)[open] > ul.dropdown > li {
+	min-height: 36px;
+	padding: 8px var(--spacingHorizontalM);
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > .open {
+	width: 36px;
+	padding: 0;
+	color: var(--colorNeutralForeground3);
+}
+
+.cbi-dropdown[open] {
+	overflow: visible;
+	z-index: 60;
+}
+
+.cbi-dropdown[open] > ul.dropdown {
+	margin-top: 6px;
+	padding: 4px;
+	border-radius: var(--borderRadiusLarge);
+	box-shadow: var(--shadow16);
+}
+
+.cbi-dropdown.btn,
+.cbi-dropdown.cbi-button {
+	min-height: 32px;
+	overflow: visible;
+}
+
+.cbi-dropdown.btn > ul:not(.dropdown),
+.cbi-dropdown.cbi-button > ul:not(.dropdown) {
+	min-height: 32px;
+	padding: 0 14px;
+	font-weight: var(--fontWeightSemibold);
+}
+
+.cbi-dropdown.btn > .open,
+.cbi-dropdown.cbi-button > .open {
+	width: 34px;
+	border-left: 1px solid color-mix(in srgb, var(--btn-fg, currentColor) 18%, transparent);
+}
+
+.cbi-dropdown.btn[open] > ul.dropdown,
+.cbi-dropdown.cbi-button[open] > ul.dropdown {
+	left: auto !important;
+	right: 0 !important;
+	min-width: max(100%, 180px);
+}
+
+.cbi-dropdown.btn[open] > ul.dropdown > li,
+.cbi-dropdown.cbi-button[open] > ul.dropdown > li {
+	min-height: 34px;
+	border-bottom: 0;
+	border-radius: var(--borderRadiusMedium);
+}
+
+.cbi-page-actions,
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--spacingHorizontalS);
+	justify-content: flex-end;
+	overflow: visible;
+	text-align: initial;
+}
+
+.cbi-page-actions::after {
+	display: none;
+	content: none;
+}
+
+.cbi-page-actions > * {
+	float: none !important;
+	margin: 0 !important;
+	vertical-align: middle;
+}
+
+.cbi-page-actions > .fluent-button-proxy.native-cbi-button-save {
+	order: 10;
+}
+
+.cbi-page-actions > .fluent-button-proxy.native-cbi-button-reset {
+	order: 11;
+}
+
+.cbi-page-actions > .cbi-dropdown.cbi-button-apply,
+.cbi-page-actions > .cbi-dropdown.cbi-button-negative {
+	order: 20;
+	margin-inline-start: auto !important;
+}
+
+.cbi-page-actions > .fluent-button-proxy > fluent-button,
+.cbi-page-actions > .fluent-button-proxy > fluent-anchor-button {
+	min-width: 96px;
+}
+
+.td.cbi-section-actions {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.td.cbi-section-actions > div {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: center;
+	gap: var(--spacingHorizontalS);
+}
+
+.td.cbi-section-actions > :not(.cbi-dropdown) > *,
+.td.cbi-section-actions > * > form > * {
+	flex: 0 0 auto;
+	margin: 0;
+}
+
+.td.cbi-section-actions .fluent-button-proxy {
+	display: inline-flex;
+	flex: 0 0 auto;
+}
+
+.td.cbi-section-actions .fluent-button-proxy > fluent-button,
+.td.cbi-section-actions .fluent-button-proxy > fluent-anchor-button {
+	min-width: 92px;
+}
+
+.cbi-checkbox {
+	gap: var(--spacingHorizontalS);
+}
+
+.cbi-checkbox > label[for] {
+	display: none;
+}
+
+.cbi-checkbox > input[type="checkbox"] {
+	width: 40px;
+	height: 20px;
+	flex: 0 0 40px;
+}
+
+.cbi-checkbox > input[type="checkbox"]::before {
+	width: 40px;
+	height: 20px;
+	border-radius: 999px;
+	background: var(--colorNeutralBackground4);
+	border-color: color-mix(in srgb, var(--colorNeutralStrokeAccessible) 82%, transparent);
+}
+
+.cbi-checkbox > input[type="checkbox"]::after {
+	top: 1px;
+	left: 1px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--colorNeutralBackground1);
+	box-shadow: var(--shadow2);
+	transition: transform var(--durationNormal) var(--curveEasyEase), background var(--durationFast);
+}
+
+.cbi-checkbox > input[type="checkbox"]:checked::before {
+	background: var(--colorBrandBackground);
+	border-color: var(--colorBrandBackground);
+}
+
+.cbi-checkbox > input[type="checkbox"]:checked::after {
+	transform: translateX(20px);
+	background: var(--colorNeutralForegroundOnBrand);
+	-webkit-mask: none;
+	mask: none;
+}
+
+.cbi-checkbox > input[type="checkbox"]:focus-visible::before {
+	outline: 2px solid color-mix(in srgb, var(--colorBrandBackground) 28%, transparent);
+	outline-offset: 2px;
+}

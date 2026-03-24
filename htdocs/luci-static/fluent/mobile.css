@@ -241,3 +241,30 @@ select,
 .fluent-auth-brand {
 	align-items: flex-start;
 }
+
+.cbi-page-actions {
+	align-items: stretch;
+	justify-content: stretch;
+	gap: var(--spacingHorizontalS);
+}
+
+.cbi-page-actions > .cbi-dropdown.cbi-button-apply,
+.cbi-page-actions > .cbi-dropdown.cbi-button-negative {
+	order: 0;
+	margin-inline-start: 0 !important;
+	width: 100%;
+}
+
+.cbi-page-actions > .fluent-button-proxy,
+.cbi-page-actions > button.cbi-button {
+	flex: 1 1 calc(50% - 4px);
+}
+
+.cbi-page-actions > .fluent-button-proxy > fluent-button,
+.cbi-page-actions > .fluent-button-proxy > fluent-anchor-button {
+	width: 100%;
+}
+
+.td.cbi-section-actions > div {
+	justify-content: flex-start;
+}
