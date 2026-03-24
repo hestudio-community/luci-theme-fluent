@@ -35,9 +35,34 @@
 		return el;
 	}
 
+	function queryAllIncludingSelf(root, selector) {
+		const matches = [];
+
+		if (root?.nodeType === Node.ELEMENT_NODE && root.matches(selector))
+			matches.push(root);
+
+		if (root?.querySelectorAll)
+			matches.push(...root.querySelectorAll(selector));
+
+		return matches;
+	}
+
 	function hideNativeControl(node) {
 		node.classList.add(proxyClass);
 		node.setAttribute('tabindex', '-1');
+	}
+
+	function reportEnhancementError(kind, error, node) {
+		console.error(`[fluent] Failed to enhance ${kind}`, node, error);
+	}
+
+	function runEnhancer(kind, fn) {
+		try {
+			fn();
+		}
+		catch (error) {
+			reportEnhancementError(kind, error);
+		}
 	}
 
 	function dispatch(node, type) {
@@ -60,21 +85,93 @@
 			node.removeAttribute(attr);
 	}
 
-	function resolveButtonAppearance(node) {
+	function findDropdownListbox(control) {
+		return Array.from(control.children).find((child) =>
+			child.tagName === 'FLUENT-LISTBOX' && !child.hasAttribute('slot')) || null;
+	}
+
+	function ensureDropdownListbox(control) {
+		let listbox = findDropdownListbox(control);
+
+		if (listbox)
+			return listbox;
+
+		listbox = create('fluent-listbox');
+
+		const slottedControl = Array.from(control.children).find((child) =>
+			child.getAttribute?.('slot') === 'control');
+
+		if (slottedControl)
+			control.insertBefore(listbox, slottedControl);
+		else
+			control.appendChild(listbox);
+
+		return listbox;
+	}
+
+	function syncEnhancedSelectValue(control, select, attempt) {
+		const selectedValue = select.value ?? '';
+		const expectedOptions = select.options.length;
+		const controlOptions = control.options?.length ?? 0;
+
+		if (attempt == null)
+			attempt = 0;
+
+		if (attempt < 10 && (!control.listbox || controlOptions !== expectedOptions)) {
+			requestAnimationFrame(() => syncEnhancedSelectValue(control, select, attempt + 1));
+			return;
+		}
+
+		control.value = selectedValue;
+	}
+
+	function triggerLinkActivation(link) {
+		if (!link)
+			return;
+
+		link.click();
+	}
+
+	function resolveButtonVariant(node) {
 		if (node.classList.contains('cbi-button-apply') ||
-			node.classList.contains('cbi-button-save') ||
-			node.classList.contains('cbi-button-positive') ||
+			node.classList.contains('cbi-button-action') ||
+			node.classList.contains('cbi-button-edit') ||
+			node.classList.contains('cbi-button-reload') ||
 			node.classList.contains('important') ||
 			node.classList.contains('primary'))
-			return 'accent';
+			return 'primary';
 
 		if (node.classList.contains('cbi-button-negative') ||
 			node.classList.contains('cbi-button-reset') ||
+			node.classList.contains('cbi-button-remove') ||
 			node.classList.contains('danger') ||
 			node.classList.contains('error'))
-			return 'outline';
+			return 'danger';
 
-		return 'neutral';
+		if (node.classList.contains('cbi-button-save') ||
+			node.classList.contains('cbi-button-positive') ||
+			node.classList.contains('cbi-button-fieldadd') ||
+			node.classList.contains('cbi-button-add'))
+			return 'success';
+
+		if (node.classList.contains('cbi-button-link') ||
+			node.classList.contains('cbi-button-download') ||
+			node.classList.contains('cbi-button-find') ||
+			node.classList.contains('cbi-button-up') ||
+			node.classList.contains('cbi-button-down'))
+			return 'neutral-subtle';
+
+		return 'neutral-outline';
+	}
+
+	function resolveButtonAppearance(variant) {
+		if (variant === 'primary')
+			return 'primary';
+
+		if (variant === 'neutral-subtle')
+			return 'subtle';
+
+		return 'outline';
 	}
 
 	function updateInvalidState(nativeNode, host) {
@@ -84,11 +181,29 @@
 		host.classList.toggle('is-invalid', invalid);
 	}
 
-	function enhanceTextInputs(root) {
-		if (!hasComponent('fluent-text-input'))
+	function isInlineEnhancedSelect(select) {
+		return select.classList.contains('cbi-button') ||
+			select.classList.contains('btn') ||
+			!!select.closest('.control-group, .cbi-page-actions, .cbi-section-actions');
+	}
+
+	function getRuntimeCapabilities() {
+		return {
+			textInputs: hasComponent('fluent-text-input'),
+			textareas: hasComponent('fluent-textarea'),
+			selects: hasComponent('fluent-dropdown') && hasComponent('fluent-listbox') && hasComponent('fluent-option'),
+			switches: hasComponent('fluent-switch'),
+			buttons: hasComponent('fluent-button'),
+			anchorButtons: hasComponent('fluent-anchor-button'),
+			badges: hasComponent('fluent-badge')
+		};
+	}
+
+	function enhanceTextInputs(root, capabilities) {
+		if (!capabilities.textInputs)
 			return;
 
-		root.querySelectorAll('input.cbi-input-text, input.cbi-input-password').forEach((input) => {
+		queryAllIncludingSelf(root, 'input.cbi-input-text, input.cbi-input-password').forEach((input) => {
 			if (input.dataset.fluentEnhanced || input.closest('.cbi-dropdown, .cbi-dynlist'))
 				return;
 
@@ -135,11 +250,11 @@
 		});
 	}
 
-	function enhanceTextareas(root) {
-		if (!hasComponent('fluent-textarea'))
+	function enhanceTextareas(root, capabilities) {
+		if (!capabilities.textareas)
 			return;
 
-		root.querySelectorAll('textarea.cbi-input-textarea').forEach((textarea) => {
+		queryAllIncludingSelf(root, 'textarea.cbi-input-textarea').forEach((textarea) => {
 			if (textarea.dataset.fluentEnhanced || textarea.closest('.cbi-dropdown, .cbi-dynlist'))
 				return;
 
@@ -185,22 +300,32 @@
 		});
 	}
 
-	function enhanceSelects(root) {
-		if (!hasComponent('fluent-dropdown') || !hasComponent('fluent-option'))
+	function enhanceSelects(root, capabilities) {
+		if (!capabilities.selects)
 			return;
 
-		root.querySelectorAll('select.cbi-input-select').forEach((select) => {
+		queryAllIncludingSelf(root, 'select.cbi-input-select').forEach((select) => {
 			if (select.dataset.fluentEnhanced || select.multiple || select.size > 1 || select.closest('.cbi-dynlist'))
 				return;
 
 			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-select-control' });
 			const control = create('fluent-dropdown', {
-				appearance: 'filled-lighter',
-				name: select.name || null
+				appearance: 'filled-lighter'
 			});
 
+			const syncHostLayout = () => {
+				const inline = isInlineEnhancedSelect(select);
+
+				host.classList.toggle('fluent-enhanced-select-inline', inline);
+				host.style.width = (inline && select.style.width) ? select.style.width : '';
+				host.style.minWidth = (inline && select.style.minWidth) ? select.style.minWidth : '';
+				host.style.maxWidth = (inline && select.style.maxWidth) ? select.style.maxWidth : '';
+			};
+
 			const rebuildOptions = () => {
-				control.replaceChildren();
+				const listbox = ensureDropdownListbox(control);
+
+				listbox.replaceChildren();
 
 				Array.from(select.options).forEach((option) => {
 					const item = create('fluent-option', {
@@ -211,12 +336,13 @@
 					if (option.selected)
 						item.setAttribute('selected', '');
 
-					control.appendChild(item);
+					listbox.appendChild(item);
 				});
 
-				control.value = select.value ?? '';
+				syncHostLayout();
 				syncBooleanAttr(control, 'disabled', select.disabled);
 				updateInvalidState(select, host);
+				syncEnhancedSelectValue(control, select);
 			};
 
 			control.addEventListener('change', () => {
@@ -229,183 +355,164 @@
 				attributes: true,
 				childList: true,
 				subtree: true,
-				attributeFilter: ['class', 'disabled', 'selected']
+				attributeFilter: ['class', 'disabled', 'selected', 'style']
 			});
 
-			rebuildOptions();
 			select.after(host);
 			host.appendChild(control);
+			rebuildOptions();
 			hideNativeControl(select);
 			select.dataset.fluentEnhanced = 'true';
 		});
 	}
 
-	function enhanceCheckboxes(root) {
-		if (!hasComponent('fluent-switch'))
+	function enhanceCheckboxes(root, capabilities) {
+		if (!capabilities.switches)
 			return;
 
-		root.querySelectorAll('.cbi-checkbox > input[type="checkbox"]').forEach((input) => {
+		queryAllIncludingSelf(root, '.cbi-checkbox > input[type="checkbox"]').forEach((input) => {
 			if (input.dataset.fluentEnhanced)
 				return;
 
 			const frame = input.parentElement;
-			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-switch-control' });
-			const control = create('fluent-switch', {
-				name: input.name || null
-			});
+			let host = null;
 
-			const syncFromNative = () => {
-				control.checked = !!input.checked;
-				syncBooleanAttr(control, 'disabled', input.disabled);
-				updateInvalidState(input, host);
-			};
+			if (!frame)
+				return;
 
-			control.addEventListener('change', () => {
-				input.checked = !!control.checked;
-				dispatch(input, 'click');
-				dispatch(input, 'change');
-			});
+			try {
+				const control = create('fluent-switch', {
+					name: input.name || null
+				});
+				const proxyLabel = input.id ? frame.querySelector(`label[for="${input.id}"]`) : null;
+				const tooltip = frame.querySelector('.cbi-tooltip-container');
 
-			input.addEventListener('change', syncFromNative);
-			new MutationObserver(syncFromNative).observe(input, {
-				attributes: true,
-				attributeFilter: ['class', 'disabled', 'checked']
-			});
+				host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-switch-control' });
 
-			syncFromNative();
-			frame.appendChild(host);
-			host.appendChild(control);
-			hideNativeControl(input);
-			frame.querySelectorAll('label').forEach((label) => label.classList.add('fluent-hidden-decorator'));
-			input.dataset.fluentEnhanced = 'true';
+				const syncFromNative = () => {
+					control.checked = !!input.checked;
+					syncBooleanAttr(control, 'disabled', input.disabled);
+					updateInvalidState(input, host);
+				};
+
+				control.addEventListener('change', () => {
+					input.checked = !!control.checked;
+					dispatch(input, 'click');
+					dispatch(input, 'change');
+				});
+
+				input.addEventListener('change', syncFromNative);
+				new MutationObserver(syncFromNative).observe(input, {
+					attributes: true,
+					attributeFilter: ['class', 'disabled', 'checked']
+				});
+
+				syncFromNative();
+				host.appendChild(control);
+
+				if (tooltip)
+					frame.insertBefore(host, tooltip);
+				else
+					frame.appendChild(host);
+
+				hideNativeControl(input);
+
+				if (proxyLabel && !proxyLabel.textContent.trim())
+					proxyLabel.classList.add('fluent-hidden-decorator');
+
+				input.dataset.fluentEnhanced = 'true';
+			}
+			catch (error) {
+				host?.remove();
+				reportEnhancementError('checkbox', error, input);
+			}
 		});
 	}
 
-	function enhanceButtons(root) {
-		if (!hasComponent('fluent-button') || !hasComponent('fluent-anchor-button'))
+	function enhanceButtons(root, capabilities) {
+		if (!capabilities.buttons && !capabilities.anchorButtons)
 			return;
 
-		root.querySelectorAll('button.cbi-button, button.btn, input[type="submit"], input[type="button"], input[type="reset"], a.btn').forEach((node) => {
+		queryAllIncludingSelf(root, 'button.cbi-button, button.btn, input[type="submit"], input[type="button"], input[type="reset"], a.btn, a.cbi-button').forEach((node) => {
 			if (node.dataset.fluentEnhanced ||
 				node.id === 'menu-toggle' ||
 				node.id === 'menu-toggle-mobile' ||
-				node.closest('.fluent-nav-header, .fluent-topbar, .cbi-dynlist, .control-group'))
+				node.closest('.fluent-nav-header, .fluent-topbar, .cbi-dynlist, .control-group, .cbi-dropdown'))
 				return;
 
-			const isAnchor = node.tagName === 'A';
-			const host = create('span', { class: 'fluent-button-proxy' });
-			const control = create(isAnchor ? 'fluent-anchor-button' : 'fluent-button', {
-				appearance: resolveButtonAppearance(node),
-				href: isAnchor ? node.getAttribute('href') : null,
-				target: isAnchor ? node.getAttribute('target') : null,
-				rel: isAnchor ? node.getAttribute('rel') : null
-			}, (node.value || node.textContent || '').trim());
+			let host = null;
 
-			const syncFromNative = () => {
-				control.textContent = (node.value || node.textContent || '').trim();
-				syncBooleanAttr(control, 'disabled', !!node.disabled);
-			};
+			try {
+				const isAnchor = node.tagName === 'A';
 
-			control.addEventListener('click', (ev) => {
-				if (isAnchor)
+				if (isAnchor ? !capabilities.anchorButtons : !capabilities.buttons)
 					return;
 
-				ev.preventDefault();
-				node.click();
-			});
+				const variant = resolveButtonVariant(node);
+				const control = create(isAnchor ? 'fluent-anchor-button' : 'fluent-button', {
+					appearance: resolveButtonAppearance(variant),
+					href: isAnchor ? node.getAttribute('href') : null,
+					target: isAnchor ? node.getAttribute('target') : null,
+					rel: isAnchor ? node.getAttribute('rel') : null
+				}, (node.value || node.textContent || '').trim());
 
-			syncFromNative();
-			if (!isAnchor) {
+				host = create('span', { class: 'fluent-button-proxy' });
+
+				const syncFromNative = () => {
+					const nextVariant = resolveButtonVariant(node);
+
+					control.textContent = (node.value || node.textContent || '').trim();
+					control.setAttribute('appearance', resolveButtonAppearance(nextVariant));
+					syncBooleanAttr(control, 'disabled', !!node.disabled);
+					if (isAnchor) {
+						control.setAttribute('href', node.getAttribute('href') || '');
+						if (node.getAttribute('target'))
+							control.setAttribute('target', node.getAttribute('target'));
+						else
+							control.removeAttribute('target');
+
+						if (node.getAttribute('rel'))
+							control.setAttribute('rel', node.getAttribute('rel'));
+						else
+							control.removeAttribute('rel');
+					}
+					host.dataset.buttonVariant = nextVariant;
+				};
+
+				control.addEventListener('click', (ev) => {
+					if (isAnchor)
+						return;
+
+					ev.preventDefault();
+					node.click();
+				});
+
+				syncFromNative();
 				new MutationObserver(syncFromNative).observe(node, {
 					attributes: true,
-					attributeFilter: ['disabled', 'value', 'class']
+					childList: true,
+					characterData: true,
+					subtree: true,
+					attributeFilter: ['class', 'disabled', 'href', 'rel', 'target', 'title', 'value']
 				});
-			}
-			node.after(host);
-			host.appendChild(control);
-			if (!isAnchor)
+
+				host.appendChild(control);
+				node.after(host);
 				hideNativeControl(node);
-			else
-				node.classList.add(proxyClass);
-
-			node.dataset.fluentEnhanced = 'true';
+				node.dataset.fluentEnhanced = 'true';
+			}
+			catch (error) {
+				host?.remove();
+				reportEnhancementError('button', error, node);
+			}
 		});
 	}
 
-	function isActiveTabItem(item) {
-		return item.classList.contains('active') ||
-			item.classList.contains('cbi-tab') ||
-			item.getAttribute('data-tab-active') === 'true';
+	function enhanceTabLists() {
 	}
 
-	function enhanceTabLists(root) {
-		if (!hasComponent('fluent-tabs') || !hasComponent('fluent-tab') || !hasComponent('fluent-tab-panel'))
-			return;
-
-		root.querySelectorAll('ul.cbi-tabmenu, #tabmenu > ul.tabs').forEach((list, listIndex) => {
-			if (list.dataset.fluentEnhanced)
-				return;
-
-			const tabs = create('fluent-tabs', {
-				class: 'fluent-tabs-proxy',
-				appearance: 'subtle',
-				size: 'small'
-			});
-
-			const renderTabs = () => {
-				tabs.replaceChildren();
-				let activeId = null;
-				let visibleIndex = 0;
-
-				Array.from(list.children).forEach((item) => {
-					if (item.style.display === 'none')
-						return;
-
-					const link = item.querySelector('a');
-					if (!link)
-						return;
-
-					const tabId = `${list.id || 'fluent-tab'}-${listIndex}-${visibleIndex}`;
-					const tab = create('fluent-tab', { id: tabId, slot: 'tab' }, link.textContent.trim());
-					const panel = create('fluent-tab-panel', {
-						slot: 'tabpanel',
-						class: 'fluent-tab-panel-proxy',
-						hidden: true
-					});
-
-					tab.addEventListener('click', (ev) => {
-						ev.preventDefault();
-						link.click();
-					});
-
-					if (isActiveTabItem(item))
-						activeId = tabId;
-
-					tabs.appendChild(tab);
-					tabs.appendChild(panel);
-					visibleIndex++;
-				});
-
-				if (activeId)
-					tabs.setAttribute('activeid', activeId);
-			};
-
-			renderTabs();
-			new MutationObserver(renderTabs).observe(list, {
-				attributes: true,
-				childList: true,
-				subtree: true,
-				attributeFilter: ['class', 'style', 'data-tab-active']
-			});
-
-			list.after(tabs);
-			list.classList.add(proxyClass, 'fluent-native-tabs');
-			list.dataset.fluentEnhanced = 'true';
-		});
-	}
-
-	function enhanceIndicators() {
-		if (!hasComponent('fluent-badge'))
+	function enhanceIndicators(capabilities) {
+		if (!capabilities.badges)
 			return;
 
 		document.querySelectorAll('#indicators > span[data-indicator]').forEach((indicator) => {
@@ -424,6 +531,10 @@
 			}
 
 			badge.textContent = indicator.dataset.fluentLabel || '';
+			badge.setAttribute('appearance', indicator.getAttribute('data-style') === 'inactive' ? 'tint' : 'filled');
+			badge.setAttribute('color', indicator.getAttribute('data-style') === 'inactive' ? 'subtle' : 'brand');
+			badge.setAttribute('shape', 'rounded');
+			badge.setAttribute('size', 'small');
 			indicator.classList.toggle('inactive', indicator.getAttribute('data-style') === 'inactive');
 		});
 	}
@@ -482,13 +593,15 @@
 		if (!root || root.nodeType !== Node.ELEMENT_NODE && root.nodeType !== Node.DOCUMENT_NODE)
 			return;
 
-		enhanceTextInputs(root);
-		enhanceTextareas(root);
-		enhanceSelects(root);
-		enhanceCheckboxes(root);
-		enhanceButtons(root);
-		enhanceTabLists(root);
-		enhanceIndicators();
+		const capabilities = getRuntimeCapabilities();
+
+		runEnhancer('text inputs', () => enhanceTextInputs(root, capabilities));
+		runEnhancer('textareas', () => enhanceTextareas(root, capabilities));
+		runEnhancer('selects', () => enhanceSelects(root, capabilities));
+		runEnhancer('checkboxes', () => enhanceCheckboxes(root, capabilities));
+		runEnhancer('buttons', () => enhanceButtons(root, capabilities));
+		runEnhancer('tabs', () => enhanceTabLists(root));
+		runEnhancer('indicators', () => enhanceIndicators(capabilities));
 	}
 
 	function observeDom() {

@@ -58,7 +58,7 @@
 						<span class="brand-text">{{ striptags(boardinfo.hostname ?? '?') }}</span>
 					</a>
 				</div>
-				<fluent-tree id="topmenu" class="fluent-menu-tree" style="display:none"></fluent-tree>
+					<nav id="topmenu" class="fluent-menu-tree" style="display:none" aria-label="{{ _('Primary navigation') }}"></nav>
 				<div class="fluent-nav-footer">
 					<div id="indicators" class="fluent-indicators"></div>
 				</div>

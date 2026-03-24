@@ -4,8 +4,43 @@
 
 return baseclass.extend({
 	__init__() {
+		this.sidebarMediaQuery = window.matchMedia('(max-width: 768px)');
 		this.setupSidebar();
 		ui.menu.load().then((tree) => this.render(tree));
+	},
+
+	setMobileSidebarOpen(open) {
+		const sidebar = document.getElementById('sidebar');
+		const overlay = document.getElementById('sidebar-overlay');
+
+		sidebar?.classList.toggle('mobile-open', open);
+		overlay?.classList.toggle('active', open);
+	},
+
+	storeSidebarPreference(collapsed) {
+		try {
+			localStorage.setItem('fluent-sidebar-collapsed', collapsed ? '1' : '0');
+		} catch (e) {}
+	},
+
+	syncSidebarPreference() {
+		const sidebar = document.getElementById('sidebar');
+		let collapsed = false;
+
+		if (!sidebar)
+			return;
+
+		try {
+			collapsed = localStorage.getItem('fluent-sidebar-collapsed') === '1';
+		} catch (e) {}
+
+		if (this.sidebarMediaQuery?.matches) {
+			collapsed = false;
+			this.setMobileSidebarOpen(false);
+		}
+
+		sidebar.classList.toggle('collapsed', collapsed);
+		document.body.classList.toggle('sidebar-collapsed', collapsed);
 	},
 
 	setupSidebar() {
@@ -16,35 +51,30 @@ return baseclass.extend({
 
 		if (toggleBtn) {
 			toggleBtn.addEventListener('click', () => {
-				sidebar.classList.toggle('collapsed');
-				document.body.classList.toggle('sidebar-collapsed');
-				try {
-					localStorage.setItem('fluent-sidebar-collapsed',
-						sidebar.classList.contains('collapsed') ? '1' : '0');
-				} catch(e) {}
+				const collapsed = !sidebar?.classList.contains('collapsed');
+				this.storeSidebarPreference(collapsed);
+				this.syncSidebarPreference();
 			});
 		}
 
 		if (toggleBtnMobile) {
 			toggleBtnMobile.addEventListener('click', () => {
-				sidebar.classList.toggle('mobile-open');
-				overlay.classList.toggle('active');
+				this.setMobileSidebarOpen(!sidebar?.classList.contains('mobile-open'));
 			});
 		}
 
 		if (overlay) {
 			overlay.addEventListener('click', () => {
-				sidebar.classList.remove('mobile-open');
-				overlay.classList.remove('active');
+				this.setMobileSidebarOpen(false);
 			});
 		}
 
-		try {
-			if (localStorage.getItem('fluent-sidebar-collapsed') === '1') {
-				sidebar.classList.add('collapsed');
-				document.body.classList.add('sidebar-collapsed');
-			}
-		} catch(e) {}
+		if (this.sidebarMediaQuery?.addEventListener)
+			this.sidebarMediaQuery.addEventListener('change', () => this.syncSidebarPreference());
+		else if (this.sidebarMediaQuery?.addListener)
+			this.sidebarMediaQuery.addListener(() => this.syncSidebarPreference());
+
+		this.syncSidebarPreference();
 	},
 
 	render(tree) {
@@ -64,57 +94,78 @@ return baseclass.extend({
 		}
 	},
 
+	getTabActiveId(tabs) {
+		return tabs?.activeid || tabs?.getAttribute('activeid');
+	},
+
+	bindTabChangeNavigation(tabs, destinations) {
+		let activeId = this.getTabActiveId(tabs);
+
+		tabs.addEventListener('change', () => {
+			const nextId = this.getTabActiveId(tabs);
+			const href = nextId ? destinations[nextId] : null;
+
+			if (!nextId || nextId === activeId || !href)
+				return;
+
+			activeId = nextId;
+			window.location.href = href;
+		});
+	},
+
 	renderTabMenu(tree, url, level) {
 		const container = document.querySelector('#tabmenu');
-		const tabs = document.createElement('fluent-tabs');
 		const children = ui.menu.getChildren(tree);
+		const depth = level || 0;
+		const tabs = document.createElement('ul');
 		let activeNode = null;
-		let activeId = null;
-		let index = 0;
+		let firstNode = null;
 
-		tabs.className = 'fluent-content-tabs';
-		tabs.setAttribute('appearance', 'subtle');
-		tabs.setAttribute('size', 'small');
+		if (!depth) {
+			container.replaceChildren();
+			container.style.display = 'none';
+		}
+
+		tabs.className = 'tabs';
 
 		children.forEach(child => {
-			const isActive = (L.env.dispatchpath[3 + (level || 0)] == child.name);
-			const tabId = 'content-tab-%s-%s'.format(level || 0, index++);
-			const tab = document.createElement('fluent-tab');
-			const panel = document.createElement('fluent-tab-panel');
+			const isActive = (L.env.dispatchpath[3 + depth] == child.name);
+			const href = L.url(url, child.name);
+			const tab = document.createElement('li');
+			const link = document.createElement('a');
 
-			tab.id = tabId;
-			tab.setAttribute('slot', 'tab');
-			tab.textContent = _(child.title);
-			tab.addEventListener('click', () => {
-				window.location.href = L.url(url, child.name);
-			});
+			if (!firstNode)
+				firstNode = child;
 
-			panel.setAttribute('slot', 'tabpanel');
-			panel.className = 'fluent-tab-panel-proxy';
-			panel.hidden = true;
-
+			tab.className = 'tabmenu-item-%s%s'.format(child.name, isActive ? ' active' : '');
+			link.href = href;
+			link.textContent = _(child.title);
+			tab.appendChild(link);
 			tabs.appendChild(tab);
-			tabs.appendChild(panel);
 
-			if (isActive)
-				activeId = tabId;
-
-			if (isActive)
+			if (isActive) {
 				activeNode = child;
+			}
 		});
 
-		if (!tabs.querySelector('fluent-tab'))
-			return E([]);
+		if (!activeNode && firstNode && tabs.firstElementChild) {
+			activeNode = firstNode;
+			tabs.firstElementChild.classList.add('active');
+		}
 
-		if (activeId)
-			tabs.setAttribute('activeid', activeId);
+		if (!tabs.children.length) {
+			if (!depth)
+				container.style.display = 'none';
+
+			return E([]);
+		}
 
 		container.appendChild(tabs);
-		container.style.display = '';
 
 		if (activeNode)
-			this.renderTabMenu(activeNode, url + '/' + activeNode.name, (level || 0) + 1);
+			this.renderTabMenu(activeNode, url + '/' + activeNode.name, depth + 1);
 
+		container.style.display = '';
 		return tabs;
 	},
 
@@ -122,7 +173,7 @@ return baseclass.extend({
 		const icons = {
 			'status': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM3 10a7 7 0 1114 0 7 7 0 01-14 0z"/><path d="M10 5.5a.5.5 0 01.5.5v4l2.85 1.71a.5.5 0 11-.51.86l-3.09-1.86A.5.5 0 019.5 10.5V6a.5.5 0 01.5-.5z"/></svg>',
 			'system': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M1.91 7.38A8.5 8.5 0 0110 1.5c2.39 0 4.53.99 6.07 2.57l.42-.98a.5.5 0 01.92.39l-.96 2.24a.5.5 0 01-.65.26L13.55 4.8a.5.5 0 01.26-.96l1.02.44A7.5 7.5 0 002.88 7.77a.5.5 0 11-.97-.4zm16.18 5.24A8.5 8.5 0 0110 18.5a8.49 8.49 0 01-6.07-2.57l-.42.98a.5.5 0 01-.92-.39l.96-2.24a.5.5 0 01.65-.26l2.25 1.18a.5.5 0 01-.26.96l-1.02-.44a7.5 7.5 0 0011.95-3.49.5.5 0 11.97.4z"/></svg>',
-			'network': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a3 3 0 00-1 5.83v1.34a5.24 5.24 0 00-4.78 3.49l-1.39-.8A3 3 0 102 15.5a3 3 0 001.85-.64l1.94 1.12a.5.5 0 00.68-.18A4.24 4.24 0 0110 13.17a4.24 4.24 0 013.53 2.63.5.5 0 00.68.18l1.94-1.12A3 3 0 1018 11.5a3 3 0 00-1.17.24l-1.38.8A5.24 5.24 0 0011 9.17V7.83A3 3 0 0010 2z"/></svg>',
+			'network': '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 3c-1.89 1.83-3 4.26-3 7s1.11 5.17 3 7c1.89-1.83 3-4.26 3-7s-1.11-5.17-3-7z"/><path d="M3 10h14"/><path d="M5.5 6.5h9"/><path d="M5.5 13.5h9"/></svg>',
 			'services': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 4.5A2.5 2.5 0 014.5 2h11A2.5 2.5 0 0118 4.5v3A2.5 2.5 0 0115.5 10h-11A2.5 2.5 0 012 7.5v-3zM4.5 3A1.5 1.5 0 003 4.5v3A1.5 1.5 0 004.5 9h11A1.5 1.5 0 0017 7.5v-3A1.5 1.5 0 0015.5 3h-11zM5 6a1 1 0 100-2 1 1 0 000 2zm3-1a1 1 0 11-2 0 1 1 0 012 0z"/><path d="M2 12.5A2.5 2.5 0 014.5 10h11a2.5 2.5 0 012.5 2.5v3a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 012 15.5v-3zM4.5 11A1.5 1.5 0 003 12.5v3A1.5 1.5 0 004.5 17h11a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-11zM5 14a1 1 0 100-2 1 1 0 000 2zm3-1a1 1 0 11-2 0 1 1 0 012 0z"/></svg>',
 			'vpn': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zm-3 6V6a3 3 0 116 0v2H7zm3 4a1.5 1.5 0 01.5 2.91V16a.5.5 0 01-1 0v-1.09A1.5 1.5 0 0110 12z"/></svg>',
 			'nas': '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm10 3.5a.75.75 0 100-1.5.75.75 0 000 1.5zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm12 1.5a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg>',
@@ -139,54 +190,141 @@ return baseclass.extend({
 		return '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M3.5 5.5A1.5 1.5 0 015 4h10a1.5 1.5 0 011.5 1.5v9A1.5 1.5 0 0115 16H5a1.5 1.5 0 01-1.5-1.5v-9zM5 5a.5.5 0 00-.5.5v9a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-9A.5.5 0 0015 5H5z"/></svg>';
 	},
 
+	createMenuIcon(name) {
+		const icon = document.createElement('span');
+
+		icon.className = 'nav-icon';
+		icon.setAttribute('aria-hidden', 'true');
+		icon.innerHTML = this.getMenuIcon(name);
+
+		return icon;
+	},
+
+	createMenuChevron() {
+		const chevron = document.createElement('span');
+
+		chevron.className = 'nav-arrow';
+		chevron.setAttribute('aria-hidden', 'true');
+		chevron.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M7.15 4.65a.5.5 0 01.7 0l4.5 4.5a.5.5 0 010 .7l-4.5 4.5a.5.5 0 11-.7-.7L11.29 10 7.15 5.35a.5.5 0 010-.7z"/></svg>';
+
+		return chevron;
+	},
+
 	renderMainMenu(tree, url, level) {
-		const root = level ? document.createDocumentFragment() : document.querySelector('#topmenu');
 		const children = ui.menu.getChildren(tree);
+		const depth = level || 0;
+		const list = document.createElement('ul');
 
-		if (children.length == 0 || level > 1)
-			return E([]);
+		if (children.length == 0 || depth > 1)
+			return null;
 
-		if (!level)
-			root.replaceChildren();
+		list.className = depth ? 'nav-submenu' : 'nav';
 
 		children.forEach(child => {
-			const submenu = this.renderMainMenu(child, url + '/' + child.name, (level || 0) + 1);
-			const isActive = L.env.dispatchpath.length > (level || 0) + 1 &&
-				L.env.dispatchpath[(level || 0) + 1] == child.name;
-			const item = document.createElement('fluent-tree-item');
-			const hasSubmenu = submenu && submenu.childNodes && submenu.childNodes.length > 0;
+			const title = _(child.title);
+			const itemUrl = L.url(url, child.name);
+			const submenu = this.renderMainMenu(child, url + '/' + child.name, depth + 1);
+			const isActive = L.env.dispatchpath.length > depth + 1 &&
+				L.env.dispatchpath[depth + 1] == child.name;
+			const hasSubmenu = !!submenu;
+			const item = document.createElement('li');
 
-			item.className = 'fluent-nav-item' + (isActive ? ' active' : '');
-			item.setAttribute('slot', 'item');
-			item.textContent = _(child.title);
+			item.className = 'nav-item' +
+				(hasSubmenu ? ' has-submenu' : '') +
+				(isActive ? ' active' : '') +
+				(hasSubmenu && isActive ? ' open' : '');
 
-			if (hasSubmenu && isActive)
-				item.setAttribute('expanded', '');
+			if (!depth) {
+				const group = document.createElement('div');
+				const link = document.createElement('a');
+				const label = document.createElement('span');
 
-			if (!hasSubmenu) {
-				item.addEventListener('click', () => {
-					window.location.href = L.url(url, child.name);
-				});
+				group.className = 'nav-link-group';
+				link.className = 'nav-link' + (isActive ? ' active' : '');
+				link.href = itemUrl;
+				link.title = title;
+				link.setAttribute('aria-label', title);
+				link.appendChild(this.createMenuIcon(child.name));
+
+				label.className = 'nav-text';
+				label.textContent = title;
+				link.appendChild(label);
+
+				if (isActive && (!hasSubmenu || L.env.dispatchpath.length === depth + 2))
+					link.setAttribute('aria-current', 'page');
+
+				group.appendChild(link);
+
+				if (hasSubmenu) {
+					const expand = document.createElement('button');
+
+					expand.type = 'button';
+					expand.className = 'nav-expand';
+					expand.title = title;
+					expand.setAttribute('aria-label', title);
+					expand.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+					expand.appendChild(this.createMenuChevron());
+					expand.addEventListener('click', (ev) => {
+						const expanded = !item.classList.contains('open');
+
+						ev.preventDefault();
+						ev.stopPropagation();
+						item.classList.toggle('open', expanded);
+						expand.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+					});
+
+					group.appendChild(expand);
+				}
+
+				item.appendChild(group);
+			}
+			else {
+				const link = document.createElement('a');
+
+				link.className = 'nav-sublink' + (isActive ? ' active' : '');
+				link.href = itemUrl;
+				link.textContent = title;
+				link.title = title;
+				link.setAttribute('aria-label', title);
+
+				if (isActive)
+					link.setAttribute('aria-current', 'page');
+
+				item.appendChild(link);
 			}
 
 			if (hasSubmenu)
 				item.appendChild(submenu);
 
-			root.appendChild(item);
+			list.appendChild(item);
 		});
 
-		if (!level)
+		if (!depth) {
+			const root = document.querySelector('#topmenu');
+
+			root.replaceChildren(list);
 			root.style.display = '';
 
-		return root;
+			return root;
+		}
+
+		return list;
 	},
 
 	renderModeMenu(tree) {
 		const tabs = document.querySelector('#modemenu');
+		const mainMenu = document.querySelector('#topmenu');
 		const children = ui.menu.getChildren(tree);
+		const destinations = Object.create(null);
 		let activeId = null;
+		let firstChild = null;
 
 		tabs.replaceChildren();
+		tabs.style.display = 'none';
+		mainMenu?.replaceChildren();
+		if (mainMenu)
+			mainMenu.style.display = 'none';
+
 		children.forEach((child, index) => {
 			const isActive = L.env.requestpath.length
 				? child.name === L.env.requestpath[0]
@@ -194,13 +332,15 @@ return baseclass.extend({
 			const tabId = 'mode-tab-%s'.format(index);
 			const tab = document.createElement('fluent-tab');
 			const panel = document.createElement('fluent-tab-panel');
+			const href = L.url(child.name);
+
+			if (!firstChild)
+				firstChild = child;
 
 			tab.id = tabId;
 			tab.setAttribute('slot', 'tab');
 			tab.textContent = _(child.title);
-			tab.addEventListener('click', () => {
-				window.location.href = L.url(child.name);
-			});
+			destinations[tabId] = href;
 
 			panel.setAttribute('slot', 'tabpanel');
 			panel.className = 'fluent-tab-panel-proxy';
@@ -216,10 +356,17 @@ return baseclass.extend({
 				this.renderMainMenu(child, child.name);
 		});
 
-		if (activeId)
-			tabs.setAttribute('activeid', activeId);
+		if (!activeId && firstChild) {
+			activeId = 'mode-tab-0';
+			this.renderMainMenu(firstChild, firstChild.name);
+		}
 
-		if (children.length > 1)
+		if (children.length > 1) {
 			tabs.style.display = '';
+			if (activeId)
+				tabs.setAttribute('activeid', activeId);
+
+			this.bindTabChangeNavigation(tabs, destinations);
+		}
 	}
 });

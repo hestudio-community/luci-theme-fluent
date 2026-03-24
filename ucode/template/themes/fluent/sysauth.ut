@@ -22,32 +22,35 @@
 		</div>
 		{% endif %}
 
-		<form method="post" class="fluent-auth-form" id="sysauth-form">
-			<div class="fluent-auth-field">
-				<label for="luci_username">{{ _('Username') }}</label>
-				<fluent-text-input
-					id="luci_username"
-					name="luci_username"
-					type="text"
-					placeholder="{{ _('Username') }}"
-					autocomplete="username"
-					value="{{ entityencode(duser, true) }}"></fluent-text-input>
-			</div>
+			<form method="post" class="fluent-auth-form" id="sysauth-form">
+				<div class="fluent-auth-field">
+					<label for="luci_username">{{ _('Username') }}</label>
+					<input
+						id="luci_username"
+						class="fluent-auth-input"
+						name="luci_username"
+						type="text"
+						placeholder="{{ _('Username') }}"
+						autocomplete="username"
+						autocapitalize="none"
+						value="{{ entityencode(duser, true) }}">
+				</div>
 
-			<div class="fluent-auth-field">
-				<label for="luci_password">{{ _('Password') }}</label>
-				<fluent-text-input
-					id="luci_password"
-					name="luci_password"
-					type="password"
-					placeholder="{{ _('Password') }}"
-					autocomplete="current-password"></fluent-text-input>
-			</div>
+				<div class="fluent-auth-field">
+					<label for="luci_password">{{ _('Password') }}</label>
+					<input
+						id="luci_password"
+						class="fluent-auth-input"
+						name="luci_password"
+						type="password"
+						placeholder="{{ _('Password') }}"
+						autocomplete="current-password">
+				</div>
 
-			<fluent-button appearance="accent" type="submit" id="login-submit">
-				{{ _('Log in') }}
-			</fluent-button>
-		</form>
+				<button type="submit" id="login-submit" class="fluent-auth-submit">
+					{{ _('Log in') }}
+				</button>
+			</form>
 	</div>
 
 	<script>

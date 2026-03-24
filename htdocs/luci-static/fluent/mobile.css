@@ -138,20 +138,28 @@ select,
 }
 
 /* Tabs scroll */
-.tabs, .cbi-tabmenu {
+.tabs, .cbi-tabmenu, .fluent-mode-tabs {
 	overflow-x: auto;
+	overflow-y: hidden;
 	flex-wrap: nowrap;
 	-webkit-overflow-scrolling: touch;
 	scrollbar-width: none;
+	padding-bottom: 2px;
 }
 
-.tabs::-webkit-scrollbar, .cbi-tabmenu::-webkit-scrollbar {
+.tabs::-webkit-scrollbar, .cbi-tabmenu::-webkit-scrollbar,
+.fluent-mode-tabs::-webkit-scrollbar {
 	display: none;
 }
 
 .tabs > li, .cbi-tabmenu > li {
 	max-width: none;
 	flex-shrink: 0;
+}
+
+#tabmenu {
+	gap: var(--spacingHorizontalS);
+	padding-bottom: var(--spacingHorizontalM);
 }
 
 /* Actions */

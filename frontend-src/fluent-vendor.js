@@ -5,6 +5,7 @@ import '@fluentui/web-components/checkbox.js';
 import '@fluentui/web-components/dialog.js';
 import '@fluentui/web-components/divider.js';
 import '@fluentui/web-components/dropdown.js';
+import '@fluentui/web-components/listbox.js';
 import '@fluentui/web-components/message-bar.js';
 import '@fluentui/web-components/option.js';
 import '@fluentui/web-components/switch.js';
