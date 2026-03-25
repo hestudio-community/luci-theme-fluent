@@ -197,6 +197,9 @@
 			node.classList.contains('cbi-button-down'))
 			return 'neutral-subtle';
 
+		if (node.classList.contains('cbi-button-neutral'))
+			return 'neutral';
+
 		return 'secondary';
 	}
 
@@ -208,6 +211,9 @@
 
 		if (variant === 'neutral-subtle')
 			return 'subtle';
+
+		if (variant === 'neutral')
+			return null;
 
 		return null;
 	}

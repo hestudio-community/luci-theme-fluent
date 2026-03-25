@@ -4045,6 +4045,54 @@ fluent-anchor-button {
 	min-width: 0;
 }
 
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-button,
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-anchor-button,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-button,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-anchor-button {
+	background: var(--colorNeutralBackground1);
+	color: var(--colorNeutralForeground1);
+	border: 1px solid var(--colorNeutralStroke1);
+	border-bottom-width: 2px;
+	border-radius: var(--borderRadiusMedium);
+	box-shadow: none;
+}
+
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-button:hover,
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-anchor-button:hover,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-button:hover,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-anchor-button:hover {
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 88%, var(--colorNeutralForeground1) 12%);
+	border-color: var(--colorNeutralStroke1Hover);
+}
+
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-button:active,
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-anchor-button:active,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-button:active,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-anchor-button:active {
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 78%, var(--colorNeutralForeground1) 22%);
+	border-color: var(--colorNeutralStroke1Pressed);
+	border-bottom-width: 1px;
+	padding-top: 1px;
+}
+
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-button:focus-visible,
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-anchor-button:focus-visible,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-button:focus-visible,
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-anchor-button:focus-visible {
+	outline: var(--strokeWidthThick) solid var(--colorTransparentStroke);
+	box-shadow: var(--shadow2), 0 0 0 2px var(--colorStrokeFocus2);
+}
+
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-button[disabled],
+.fluent-button-proxy[data-button-variant="neutral"] > fluent-anchor-button[disabled],
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-button[disabled],
+.fluent-button-proxy[data-button-variant="secondary"] > fluent-anchor-button[disabled] {
+	opacity: 0.5;
+	border-bottom-width: 2px;
+	padding-top: 0;
+	box-shadow: none;
+}
+
 .fluent-button-proxy[data-button-variant="success"] > fluent-button,
 .fluent-button-proxy[data-button-variant="success"] > fluent-anchor-button {
 	--colorCompoundBrandBackground: var(--colorStatusSuccessBackground3);
