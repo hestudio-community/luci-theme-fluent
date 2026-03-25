@@ -210,7 +210,7 @@
 		return 'outline';
 	}
 
-	function updateInvalidState(nativeNode, host) {
+	function syncHostState(nativeNode, host) {
 		const invalid = nativeNode.classList.contains('cbi-input-invalid') ||
 			!!nativeNode.closest('.cbi-value-error');
 
@@ -245,7 +245,7 @@
 
 			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-text-control' });
 			const control = create('fluent-text-input', {
-				appearance: 'filled-lighter',
+				appearance: 'outline',
 				type: input.type === 'password' ? 'password' : (input.type || 'text'),
 				placeholder: input.getAttribute('placeholder'),
 				name: input.name || null
@@ -255,7 +255,7 @@
 				control.value = input.value ?? '';
 				syncBooleanAttr(control, 'disabled', input.disabled);
 				syncBooleanAttr(control, 'readonly', input.readOnly);
-				updateInvalidState(input, host);
+				syncHostState(input, host);
 			};
 
 			control.addEventListener('input', () => {
@@ -296,7 +296,7 @@
 
 			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-textarea-control' });
 			const control = create('fluent-textarea', {
-				appearance: 'filled-lighter',
+				appearance: 'outline',
 				placeholder: textarea.getAttribute('placeholder'),
 				name: textarea.name || null
 			});
@@ -305,7 +305,7 @@
 				control.value = textarea.value ?? '';
 				syncBooleanAttr(control, 'disabled', textarea.disabled);
 				syncBooleanAttr(control, 'readonly', textarea.readOnly);
-				updateInvalidState(textarea, host);
+				syncHostState(textarea, host);
 			};
 
 			control.addEventListener('input', () => {
@@ -346,7 +346,7 @@
 
 			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-select-control' });
 			const control = create('fluent-dropdown', {
-				appearance: 'filled-lighter'
+				appearance: 'outline'
 			});
 
 			const syncHostLayout = () => {
@@ -377,7 +377,7 @@
 
 				syncHostLayout();
 				syncBooleanAttr(control, 'disabled', select.disabled);
-				updateInvalidState(select, host);
+				syncHostState(select, host);
 				syncEnhancedSelectValue(control, select);
 			};
 
@@ -419,7 +419,7 @@
 
 			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-select-control fluent-enhanced-dropdown-control' });
 			const control = create('fluent-dropdown', {
-				appearance: 'filled-lighter'
+				appearance: 'outline'
 			});
 
 			const syncHostLayout = () => {
@@ -453,7 +453,7 @@
 
 				syncHostLayout();
 				syncBooleanAttr(control, 'disabled', dropdown.hasAttribute('disabled'));
-				updateInvalidState(dropdown, host);
+				syncHostState(dropdown, host);
 				syncEnhancedDropdownValue(control, dropdown);
 			};
 

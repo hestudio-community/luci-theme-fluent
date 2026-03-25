@@ -265,6 +265,18 @@ select,
 	width: 100%;
 }
 
+.fluent-enhanced-control:not(.fluent-enhanced-select-inline) {
+	width: 100% !important;
+	max-width: 100%;
+}
+
+.fluent-enhanced-control:not(.fluent-enhanced-select-inline) > fluent-text-input,
+.fluent-enhanced-control:not(.fluent-enhanced-select-inline) > fluent-textarea,
+.fluent-enhanced-control:not(.fluent-enhanced-select-inline) > fluent-dropdown {
+	width: 100%;
+	max-width: 100%;
+}
+
 .td.cbi-section-actions > div {
 	justify-content: flex-start;
 }

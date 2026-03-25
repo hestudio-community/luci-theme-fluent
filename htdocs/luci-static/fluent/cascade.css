@@ -116,11 +116,49 @@
 	--sidebarCollapsedWidth: 48px;
 	--topbarHeight: 48px;
 
+	/* Stroke Widths */
+	--strokeWidthThin: 1px;
+	--strokeWidthThick: 2px;
+
+	/* Transparent */
+	--colorTransparentStroke: transparent;
+	--colorTransparentStrokeInteractive: transparent;
+	--colorTransparentBackground: transparent;
+
+	/* Compound Brand */
+	--colorCompoundBrandStroke: #0F6CBD;
+	--colorCompoundBrandBackground: #0F6CBD;
+	--colorCompoundBrandBackgroundHover: #115EA3;
+	--colorCompoundBrandBackgroundPressed: #0C3B5E;
+
+	/* Focus */
+	--colorStrokeFocus1: #FFFFFF;
+	--colorStrokeFocus2: #000000;
+
+	/* Neutral Stroke States */
+	--colorNeutralStroke1Hover: #C7C7C7;
+	--colorNeutralStroke1Pressed: #B3B3B3;
+	--colorNeutralStrokeAccessibleHover: #575757;
+	--colorNeutralStrokeAccessiblePressed: #4D4D4D;
+
+	/* Neutral Foreground States */
+	--colorNeutralForeground2Hover: #242424;
+	--colorNeutralForeground2Pressed: #242424;
+
+	/* Spacing (Vertical) */
+	--spacingVerticalXXS: 2px;
+	--spacingVerticalXS: 4px;
+	--spacingVerticalSNudge: 6px;
+	--spacingVerticalS: 8px;
+	--spacingVerticalM: 12px;
+
 	/* Durations */
+	--durationUltraFast: 50ms;
 	--durationNormal: 0.2s;
 	--durationFast: 0.1s;
 
 	/* Curves */
+	--curveAccelerateMid: cubic-bezier(1, 0, 1, 1);
 	--curveDecelerateMax: cubic-bezier(0, 0, 0, 1);
 	--curveDecelerateMid: cubic-bezier(0.1, 0.9, 0.2, 1);
 	--curveEasyEase: cubic-bezier(0.33, 0, 0.67, 1);
@@ -178,6 +216,22 @@
 	--colorStatusWarningBackground3: #F98845;
 	--colorStatusWarningForeground1: #F98845;
 	--colorStatusWarningStroke1: #5A3512;
+
+	--colorCompoundBrandStroke: #2886DE;
+	--colorCompoundBrandBackground: #2886DE;
+	--colorCompoundBrandBackgroundHover: #3C96E6;
+	--colorCompoundBrandBackgroundPressed: #1A6FB5;
+
+	--colorStrokeFocus1: #000000;
+	--colorStrokeFocus2: #FFFFFF;
+
+	--colorNeutralStroke1Hover: #757575;
+	--colorNeutralStroke1Pressed: #6B6B6B;
+	--colorNeutralStrokeAccessibleHover: #BDBDBD;
+	--colorNeutralStrokeAccessiblePressed: #B3B3B3;
+
+	--colorNeutralForeground2Hover: #FFFFFF;
+	--colorNeutralForeground2Pressed: #FFFFFF;
 
 	--shadow2: 0 1px 2px rgba(0,0,0,0.36);
 	--shadow4: 0 2px 4px rgba(0,0,0,0.36);
@@ -4462,4 +4516,235 @@ body.auth-submitting .fluent-auth-form {
 .cbi-checkbox > input[type="checkbox"]:focus-visible::before {
 	outline: 2px solid color-mix(in srgb, var(--colorBrandBackground) 28%, transparent);
 	outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Canonical Fluent Form Fields
+   ========================================================================== */
+
+input.cbi-input-text,
+input.cbi-input-password,
+textarea.cbi-input-textarea,
+select.cbi-input-select,
+.cbi-select,
+.cbi-dropdown:not(.btn):not(.cbi-button),
+.fluent-enhanced-control.fluent-enhanced-text-control,
+.fluent-enhanced-control.fluent-enhanced-textarea-control,
+.fluent-enhanced-control.fluent-enhanced-select-control {
+	--fluentFieldBackground: color-mix(in srgb, var(--colorNeutralBackground1) 92%, var(--colorNeutralBackground3));
+	--fluentFieldBackgroundHover: color-mix(in srgb, var(--colorNeutralBackground1Hover) 94%, var(--colorNeutralBackground3));
+	--fluentFieldBackgroundReadonly: color-mix(in srgb, var(--colorNeutralBackground3) 94%, var(--colorNeutralBackground4));
+	--fluentFieldBorder: color-mix(in srgb, var(--colorNeutralStroke1) 82%, transparent);
+	--fluentFieldBorderHover: color-mix(in srgb, var(--colorNeutralForeground1) 30%, var(--colorNeutralStroke1));
+	--fluentFieldBorderFocus: var(--colorBrandStroke1);
+	--fluentFieldBorderInvalid: var(--colorStatusDangerForeground3);
+	--fluentFieldBorderDisabled: var(--colorNeutralStrokeDisabled);
+	--fluentFieldIndicator: var(--colorNeutralStrokeAccessible);
+	--fluentFieldIndicatorHover: var(--colorNeutralForeground1);
+	--fluentFieldIndicatorFocus: var(--colorBrandStroke1);
+	--fluentFieldIndicatorInvalid: var(--colorStatusDangerForeground3);
+	--fluentFieldIndicatorDisabled: var(--colorNeutralStrokeDisabled);
+	--fluentFieldIndicatorReadonly: var(--colorNeutralStroke1);
+	--fluentFieldRadius: var(--borderRadiusLarge);
+	--fluentFieldPaddingInline: var(--spacingHorizontalM);
+	--fluentFieldMinHeight: 36px;
+	--fluentFieldTransition: border-color var(--durationFast), background var(--durationFast), box-shadow var(--durationFast), color var(--durationFast);
+}
+
+input.cbi-input-text,
+input.cbi-input-password,
+textarea.cbi-input-textarea,
+select.cbi-input-select,
+.cbi-select,
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	background: var(--fluentFieldBackground);
+	border: 1px solid var(--fluentFieldBorder);
+	border-radius: var(--fluentFieldRadius);
+	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicator);
+	color: var(--colorNeutralForeground1);
+	transition: var(--fluentFieldTransition);
+}
+
+input.cbi-input-text,
+input.cbi-input-password,
+select.cbi-input-select,
+.cbi-select,
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	min-height: var(--fluentFieldMinHeight);
+}
+
+input.cbi-input-text,
+input.cbi-input-password,
+select.cbi-input-select {
+	padding: 0 var(--fluentFieldPaddingInline);
+}
+
+textarea.cbi-input-textarea {
+	display: block;
+	width: 100% !important;
+	min-height: 96px;
+	padding: var(--spacingVerticalS) var(--fluentFieldPaddingInline);
+	margin-bottom: var(--spacingVerticalXS);
+	resize: vertical;
+}
+
+.cbi-select {
+	padding: 0;
+}
+
+.cbi-select select,
+.cbi-select select:focus {
+	height: 100%;
+	padding: 0 calc(var(--fluentFieldPaddingInline) + 10px) 0 var(--fluentFieldPaddingInline);
+	margin-right: 0;
+	color: inherit;
+}
+
+.cbi-select::before {
+	padding: 0 var(--spacingHorizontalM);
+	color: var(--colorNeutralForeground3);
+	transition: color var(--durationFast);
+}
+
+.cbi-select:has(select:disabled) {
+	background: var(--colorNeutralBackgroundDisabled);
+	border-color: var(--fluentFieldBorderDisabled);
+	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicatorDisabled);
+	color: var(--colorNeutralForegroundDisabled);
+	cursor: not-allowed;
+}
+
+.cbi-select:has(select:disabled)::before {
+	color: var(--colorNeutralForegroundDisabled);
+}
+
+.cbi-select:has(select[readonly]) {
+	background: var(--fluentFieldBackgroundReadonly);
+	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicatorReadonly);
+	color: var(--colorNeutralForeground2);
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	padding: 0;
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > ul {
+	align-items: stretch;
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > ul > li,
+.cbi-dropdown:not(.btn):not(.cbi-button)[open] > ul.dropdown > li {
+	min-height: var(--fluentFieldMinHeight);
+	padding: 8px var(--fluentFieldPaddingInline);
+}
+
+.cbi-dropdown:not(.btn):not(.cbi-button) > .open {
+	width: 36px;
+	padding: 0;
+	color: var(--colorNeutralForeground3);
+	transition: color var(--durationFast);
+}
+
+input.cbi-input-text:hover,
+input.cbi-input-password:hover,
+textarea.cbi-input-textarea:hover,
+select.cbi-input-select:hover,
+.cbi-select:hover,
+.cbi-dropdown:not(.btn):not(.cbi-button):hover {
+	background: var(--fluentFieldBackgroundHover);
+	border-color: var(--fluentFieldBorderHover);
+	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicatorHover);
+}
+
+.cbi-select:hover::before,
+.cbi-dropdown:not(.btn):not(.cbi-button):hover > .open {
+	color: var(--colorNeutralForeground1);
+}
+
+input.cbi-input-text:focus,
+input.cbi-input-password:focus,
+textarea.cbi-input-textarea:focus,
+select.cbi-input-select:focus,
+.cbi-select:focus-within,
+.cbi-dropdown:not(.btn):not(.cbi-button):focus-within,
+.cbi-dropdown[open]:not(.btn):not(.cbi-button) {
+	outline: none;
+	border-color: var(--fluentFieldBorder);
+	box-shadow: inset 0 -2px 0 0 var(--fluentFieldIndicatorFocus);
+}
+
+.cbi-select:focus-within::before,
+.cbi-dropdown[open]:not(.btn):not(.cbi-button) > .open,
+.cbi-dropdown:not(.btn):not(.cbi-button):focus-within > .open {
+	color: var(--fluentFieldBorderFocus);
+}
+
+input.cbi-input-text.cbi-input-invalid,
+input.cbi-input-password.cbi-input-invalid,
+textarea.cbi-input-textarea.cbi-input-invalid,
+select.cbi-input-select.cbi-input-invalid,
+.cbi-select.cbi-input-invalid,
+.cbi-select:has(select.cbi-input-invalid),
+.cbi-value-error .cbi-select,
+.cbi-dropdown.cbi-input-invalid:not(.btn):not(.cbi-button),
+.cbi-value-error input.cbi-input-text,
+.cbi-value-error input.cbi-input-password,
+.cbi-value-error textarea.cbi-input-textarea,
+.cbi-value-error select.cbi-input-select {
+	border-color: var(--fluentFieldBorderInvalid);
+	box-shadow: inset 0 -2px 0 0 var(--fluentFieldIndicatorInvalid);
+	color: var(--colorStatusDangerForeground1);
+}
+
+input.cbi-input-text:disabled,
+input.cbi-input-password:disabled,
+textarea.cbi-input-textarea:disabled,
+select.cbi-input-select:disabled,
+.cbi-dropdown[disabled]:not(.btn):not(.cbi-button) {
+	background: var(--colorNeutralBackgroundDisabled);
+	border-color: var(--fluentFieldBorderDisabled);
+	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicatorDisabled);
+	color: var(--colorNeutralForegroundDisabled);
+	cursor: not-allowed;
+}
+
+input.cbi-input-text[readonly],
+input.cbi-input-password[readonly],
+textarea.cbi-input-textarea[readonly],
+select.cbi-input-select[readonly] {
+	background: var(--fluentFieldBackgroundReadonly);
+	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicatorReadonly);
+	color: var(--colorNeutralForeground2);
+}
+
+.fluent-enhanced-control.fluent-enhanced-text-control,
+.fluent-enhanced-control.fluent-enhanced-textarea-control,
+.fluent-enhanced-control.fluent-enhanced-select-control {
+	position: relative;
+	transition: var(--fluentFieldTransition);
+}
+
+.fluent-enhanced-control.fluent-enhanced-text-control > fluent-text-input,
+.fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea,
+.fluent-enhanced-control.fluent-enhanced-select-control > fluent-dropdown {
+	display: block;
+	width: 100%;
+	min-height: var(--fluentFieldMinHeight);
+	border-radius: var(--fluentFieldRadius);
+}
+
+.fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea {
+	min-height: 96px;
+	margin-bottom: var(--spacingVerticalXS);
+}
+
+.cbi-value-field > div {
+	max-width: 100%;
+}
+
+.cbi-value-field > div + .cbi-value-description,
+.cbi-value-field > .cbi-value-description {
+	display: block;
+	width: 100%;
+	margin-top: var(--spacingVerticalXS);
 }
