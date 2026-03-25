@@ -1,7 +1,6 @@
 		{% if (!blank_page): %}
 		</div>
 		<footer class="fluent-footer">
-			<fluent-divider></fluent-divider>
 			<span>
 				Powered by
 				<a href="https://github.com/openwrt/luci" target="_blank" rel="noreferrer">

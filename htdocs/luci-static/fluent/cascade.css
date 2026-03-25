@@ -4709,3 +4709,153 @@ select.cbi-input-select[readonly] {
 	width: 100%;
 	margin-top: var(--spacingVerticalXS);
 }
+
+/* ==========================================================================
+   Compatibility Fixes
+   ========================================================================== */
+
+#indicators > span[data-indicator] {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 24px;
+	padding: 0 10px;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--colorBrandBackground) 14%, var(--colorNeutralBackground1));
+	color: var(--colorBrandForegroundLink);
+	font-size: var(--fontSizeBase100);
+	font-weight: var(--fontWeightSemibold);
+	line-height: 1;
+	transition: background var(--durationFast), color var(--durationFast), box-shadow var(--durationFast);
+}
+
+#indicators > span[data-indicator][data-style="inactive"],
+#indicators > span[data-indicator].inactive {
+	background: var(--colorNeutralBackground3);
+	color: var(--colorNeutralForeground2);
+}
+
+#indicators > span[data-indicator][data-clickable]:hover {
+	background: color-mix(in srgb, var(--colorBrandBackground) 22%, var(--colorNeutralBackground1));
+	color: var(--colorNeutralForeground1);
+}
+
+#indicators > span[data-indicator][data-style="inactive"][data-clickable]:hover,
+#indicators > span[data-indicator].inactive[data-clickable]:hover {
+	background: var(--colorNeutralBackground4);
+}
+
+.container {
+	flex: 0 0 auto;
+	padding-bottom: var(--spacingHorizontalM);
+}
+
+.fluent-footer {
+	margin-top: auto;
+	gap: 0;
+}
+
+#maincontent > .cbi-map:last-child {
+	padding-bottom: 0;
+}
+
+#maincontent > .cbi-map:last-child > .cbi-page-actions,
+#maincontent > .cbi-map:last-child > .actions {
+	margin-bottom: 0;
+}
+
+[data-tab-title]:not([data-tab-active="true"]) {
+	height: 0 !important;
+	min-height: 0 !important;
+	opacity: 0 !important;
+	overflow: hidden !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+[data-tab-title]:not([data-tab-active="true"]) > * {
+	display: none !important;
+}
+
+[data-tab-active="true"] {
+	opacity: 1;
+	height: auto;
+	overflow: visible;
+}
+
+.cbi-value:has(> .cbi-value-field > .cbi-checkbox),
+.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) {
+	align-items: center;
+}
+
+.cbi-value:has(> .cbi-value-field > .cbi-checkbox) > label.cbi-value-title,
+.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) > label.cbi-value-title {
+	padding-top: 0;
+}
+
+.cbi-value:has(> .cbi-value-field > .cbi-checkbox) > .cbi-value-field,
+.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) > .cbi-value-field {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	row-gap: var(--spacingVerticalXS);
+}
+
+.cbi-value:has(> .cbi-value-field > .cbi-checkbox) > .cbi-value-field > .cbi-checkbox,
+.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) > .cbi-value-field > div:first-child {
+	display: inline-flex;
+	align-items: center;
+	min-height: 32px;
+}
+
+.table,
+.table .td,
+.table .th {
+	overflow: visible;
+}
+
+.cbi-dropdown.btn,
+.cbi-dropdown.cbi-button,
+.btn,
+.cbi-button {
+	--spinner-color: currentColor;
+}
+
+.btn.primary,
+.btn.danger,
+.btn.error,
+.cbi-button-action,
+.cbi-button-apply,
+.cbi-button-reload,
+.cbi-button-edit,
+.cbi-button-negative,
+.cbi-button-positive.important,
+.cbi-button-save {
+	--spinner-color: var(--colorNeutralForegroundOnBrand);
+}
+
+.spinning::before {
+	--spinner-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='%23000' stroke-width='3' fill='none'><circle cx='10' cy='10' r='8' stroke-opacity='.5'/><path d='M10 2c4 0 8 4 8 8'><animateTransform attributeName='transform' type='rotate' dur='1s' from='0 10 10' to='360 10 10' repeatCount='indefinite'/></path></svg>");
+	background: var(--spinner-color, currentColor);
+	mask: var(--spinner-icon) center/cover no-repeat;
+	-webkit-mask: var(--spinner-icon) center/cover no-repeat;
+}
+
+[data-darkmode="true"] .spinning::before {
+	background: var(--spinner-color, currentColor);
+}
+
+.cbi-section-actions .drag-handle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	padding: 0 12px;
+	font-size: var(--fontSizeBase400);
+	line-height: 1;
+	cursor: move !important;
+	user-select: none !important;
+	-webkit-user-select: none !important;
+}

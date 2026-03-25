@@ -493,6 +493,8 @@
 			if (node.dataset.fluentEnhanced ||
 				node.id === 'menu-toggle' ||
 				node.id === 'menu-toggle-mobile' ||
+				node.classList.contains('drag-handle') ||
+				node.draggable ||
 				node.closest('.fluent-nav-header, .fluent-topbar, .cbi-dynlist, .control-group, .cbi-dropdown'))
 				return;
 
@@ -578,81 +580,9 @@
 	function enhanceTabLists() {
 	}
 
-	function enhanceIndicators(capabilities) {
-		if (!capabilities.badges)
-			return;
-
+	function enhanceIndicators() {
 		document.querySelectorAll('#indicators > span[data-indicator]').forEach((indicator) => {
-			const label = indicator.firstChild?.nodeType === Node.TEXT_NODE
-				? indicator.firstChild.data.trim()
-				: indicator.dataset.fluentLabel || '';
-
-			if (label)
-				indicator.dataset.fluentLabel = label;
-
-			let badge = indicator.querySelector('fluent-badge');
-			if (!badge) {
-				badge = create('fluent-badge', { class: 'fluent-indicator-badge' });
-				indicator.textContent = '';
-				indicator.appendChild(badge);
-			}
-
-			badge.textContent = indicator.dataset.fluentLabel || '';
-			badge.setAttribute('appearance', indicator.getAttribute('data-style') === 'inactive' ? 'tint' : 'filled');
-			badge.setAttribute('color', indicator.getAttribute('data-style') === 'inactive' ? 'subtle' : 'brand');
-			badge.setAttribute('shape', 'rounded');
-			badge.setAttribute('size', 'small');
 			indicator.classList.toggle('inactive', indicator.getAttribute('data-style') === 'inactive');
-		});
-	}
-
-	function enhanceModalNode(modal) {
-		if (!hasComponent('fluent-dialog') || !modal)
-			return;
-
-		const current = modal.firstElementChild;
-		if (current?.tagName === 'FLUENT-DIALOG')
-			return;
-
-		const dialog = create('fluent-dialog', {
-			class: 'fluent-runtime-dialog',
-			modal: true,
-			open: true
-		});
-
-		while (modal.firstChild)
-			dialog.appendChild(modal.firstChild);
-
-		modal.appendChild(dialog);
-		enhanceRoot(dialog);
-	}
-
-	function patchUiModal() {
-		if (!window.L?.require)
-			return;
-
-		L.require('ui').then((ui) => {
-			if (ui.__fluentModalPatched)
-				return;
-
-			ui.__fluentModalPatched = true;
-
-			const originalShowModal = ui.showModal;
-			const originalHideModal = ui.hideModal;
-
-			ui.showModal = function() {
-				const dialog = originalShowModal.apply(this, arguments);
-				enhanceModalNode(dialog);
-				return dialog;
-			};
-
-			ui.hideModal = function() {
-				const dialog = document.querySelector('#modal_overlay .modal > fluent-dialog');
-				if (dialog)
-					dialog.removeAttribute('open');
-
-				return originalHideModal.apply(this, arguments);
-			};
 		});
 	}
 
@@ -714,6 +644,5 @@
 		enhanceRoot(document);
 		observeThemeState();
 		observeDom();
-		patchUiModal();
 	});
 })();
