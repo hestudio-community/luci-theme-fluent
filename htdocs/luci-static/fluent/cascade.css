@@ -2302,11 +2302,11 @@ textarea[readonly] {
 }
 
 .btn:hover, .cbi-button:hover {
-	background: var(--colorNeutralBackground1Hover);
+	background: color-mix(in srgb, var(--btn-bg) 88%, var(--colorNeutralForeground1) 12%);
 }
 
 .btn:active, .cbi-button:active {
-	background: var(--colorNeutralBackground1Pressed);
+	background: color-mix(in srgb, var(--btn-bg) 78%, var(--colorNeutralForeground1) 22%);
 	border-bottom-width: 1px;
 	padding-top: 1px;
 }
@@ -2331,12 +2331,14 @@ textarea[readonly] {
 	border-color: var(--colorStatusDangerForeground3);
 }
 
+.btn.success,
 .cbi-button-positive,
 .cbi-button-fieldadd,
 .cbi-button-add,
 .cbi-button-save {
-	--btn-fg: var(--colorStatusSuccessForeground1);
-	--btn-border: var(--colorStatusSuccessStroke1);
+	--btn-bg: var(--colorStatusSuccessBackground3);
+	--btn-fg: var(--colorNeutralForegroundOnBrand);
+	--btn-border: var(--colorStatusSuccessBackground3);
 }
 
 .cbi-button-neutral,
@@ -2353,53 +2355,20 @@ textarea[readonly] {
 .cbi-button-apply,
 .cbi-button-reload,
 .cbi-button-edit {
-	--btn-fg: var(--colorBrandForegroundLink);
-	--btn-border: var(--colorBrandStroke1);
-}
-
-.cbi-button-negative,
-.cbi-section-remove .cbi-button,
-.cbi-button-reset,
-.cbi-button-remove {
-	--btn-fg: var(--colorStatusDangerForeground1);
-	--btn-border: var(--colorStatusDangerStroke1);
-}
-
-/* Primary filled buttons */
-.btn.primary,
-.cbi-button-action.important,
-.cbi-page-actions .cbi-button-apply,
-.cbi-section-actions .cbi-button-edit {
 	--btn-bg: var(--colorBrandBackground);
 	--btn-fg: var(--colorNeutralForegroundOnBrand);
 	--btn-border: var(--colorBrandBackground);
 }
 
-.btn.primary:hover,
-.cbi-page-actions .cbi-button-apply:hover,
-.cbi-section-actions .cbi-button-edit:hover {
-	--btn-bg: var(--colorBrandBackgroundHover);
-	--btn-border: var(--colorBrandBackgroundHover);
-}
-
-.cbi-button-positive.important,
-.cbi-page-actions .cbi-button-save {
-	--btn-bg: var(--colorStatusSuccessBackground3);
-	--btn-fg: var(--colorNeutralForegroundOnBrand);
-	--btn-border: var(--colorStatusSuccessBackground3);
-}
-
-.cbi-button-negative.important {
+.btn.danger,
+.btn.error,
+.cbi-button-negative,
+.cbi-section-remove .cbi-button,
+.cbi-button-reset,
+.cbi-button-remove {
 	--btn-bg: var(--colorStatusDangerBackground3);
 	--btn-fg: var(--colorNeutralForegroundOnBrand);
 	--btn-border: var(--colorStatusDangerBackground3);
-}
-
-.cbi-page-actions .cbi-button-apply + .cbi-button-save,
-.cbi-page-actions .cbi-button-negative + .cbi-button-save {
-	--btn-bg: var(--colorNeutralBackground1);
-	--btn-fg: var(--colorStatusSuccessForeground1);
-	--btn-border: var(--colorStatusSuccessStroke1);
 }
 
 .btn.large {
@@ -4078,26 +4047,18 @@ fluent-anchor-button {
 
 .fluent-button-proxy[data-button-variant="success"] > fluent-button,
 .fluent-button-proxy[data-button-variant="success"] > fluent-anchor-button {
-	--colorNeutralForeground1: var(--colorStatusSuccessForeground1);
-	--colorNeutralForeground1Hover: var(--colorStatusSuccessForeground1);
-	--colorNeutralForeground1Pressed: var(--colorStatusSuccessForeground1);
-	--colorNeutralStroke1: var(--colorStatusSuccessStroke1);
-	--colorNeutralStroke1Hover: var(--colorStatusSuccessStroke1);
-	--colorNeutralStroke1Pressed: var(--colorStatusSuccessStroke1);
-	--colorTransparentBackgroundHover: color-mix(in srgb, var(--colorStatusSuccessBackground3) 14%, transparent);
-	--colorTransparentBackgroundPressed: color-mix(in srgb, var(--colorStatusSuccessBackground3) 20%, transparent);
+	--colorCompoundBrandBackground: var(--colorStatusSuccessBackground3);
+	--colorCompoundBrandBackgroundHover: color-mix(in srgb, var(--colorStatusSuccessBackground3) 88%, var(--colorNeutralForeground1) 12%);
+	--colorCompoundBrandBackgroundPressed: color-mix(in srgb, var(--colorStatusSuccessBackground3) 78%, var(--colorNeutralForeground1) 22%);
+	--colorCompoundBrandStroke: var(--colorStatusSuccessBackground3);
 }
 
 .fluent-button-proxy[data-button-variant="danger"] > fluent-button,
 .fluent-button-proxy[data-button-variant="danger"] > fluent-anchor-button {
-	--colorNeutralForeground1: var(--colorStatusDangerForeground1);
-	--colorNeutralForeground1Hover: var(--colorStatusDangerForeground1);
-	--colorNeutralForeground1Pressed: var(--colorStatusDangerForeground1);
-	--colorNeutralStroke1: var(--colorStatusDangerStroke1);
-	--colorNeutralStroke1Hover: var(--colorStatusDangerStroke1);
-	--colorNeutralStroke1Pressed: var(--colorStatusDangerStroke1);
-	--colorTransparentBackgroundHover: color-mix(in srgb, var(--colorStatusDangerBackground3) 12%, transparent);
-	--colorTransparentBackgroundPressed: color-mix(in srgb, var(--colorStatusDangerBackground3) 18%, transparent);
+	--colorCompoundBrandBackground: var(--colorStatusDangerBackground3);
+	--colorCompoundBrandBackgroundHover: color-mix(in srgb, var(--colorStatusDangerBackground3) 88%, var(--colorNeutralForeground1) 12%);
+	--colorCompoundBrandBackgroundPressed: color-mix(in srgb, var(--colorStatusDangerBackground3) 78%, var(--colorNeutralForeground1) 22%);
+	--colorCompoundBrandStroke: var(--colorStatusDangerBackground3);
 }
 
 .fluent-mode-tabs {

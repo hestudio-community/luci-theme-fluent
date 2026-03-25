@@ -173,7 +173,6 @@
 			node.classList.contains('cbi-button-action') ||
 			node.classList.contains('cbi-button-edit') ||
 			node.classList.contains('cbi-button-reload') ||
-			node.classList.contains('important') ||
 			node.classList.contains('primary'))
 			return 'primary';
 
@@ -187,7 +186,8 @@
 		if (node.classList.contains('cbi-button-save') ||
 			node.classList.contains('cbi-button-positive') ||
 			node.classList.contains('cbi-button-fieldadd') ||
-			node.classList.contains('cbi-button-add'))
+			node.classList.contains('cbi-button-add') ||
+			node.classList.contains('success'))
 			return 'success';
 
 		if (node.classList.contains('cbi-button-link') ||
@@ -197,17 +197,19 @@
 			node.classList.contains('cbi-button-down'))
 			return 'neutral-subtle';
 
-		return 'neutral-outline';
+		return 'secondary';
 	}
 
 	function resolveButtonAppearance(variant) {
-		if (variant === 'primary')
+		if (variant === 'primary' ||
+			variant === 'success' ||
+			variant === 'danger')
 			return 'primary';
 
 		if (variant === 'neutral-subtle')
 			return 'subtle';
 
-		return 'outline';
+		return null;
 	}
 
 	function syncHostState(nativeNode, host) {
@@ -521,9 +523,13 @@
 
 				const syncFromNative = () => {
 					const nextVariant = resolveButtonVariant(node);
+					const nextAppearance = resolveButtonAppearance(nextVariant);
 
 					control.textContent = (node.value || node.textContent || '').trim();
-					control.setAttribute('appearance', resolveButtonAppearance(nextVariant));
+					if (nextAppearance != null)
+						control.setAttribute('appearance', nextAppearance);
+					else
+						control.removeAttribute('appearance');
 					syncBooleanAttr(control, 'disabled', !!node.disabled);
 					if (isAnchor) {
 						control.setAttribute('href', node.getAttribute('href') || '');
