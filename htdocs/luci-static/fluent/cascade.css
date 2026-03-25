@@ -3941,6 +3941,13 @@ fluent-dialog {
 	box-sizing: border-box;
 }
 
+fluent-button,
+fluent-anchor-button {
+	min-height: 32px;
+	min-width: 96px;
+	padding: 0 var(--spacingHorizontalM, 12px);
+}
+
 .fluent-native-proxy {
 	position: absolute !important;
 	width: 1px !important;
