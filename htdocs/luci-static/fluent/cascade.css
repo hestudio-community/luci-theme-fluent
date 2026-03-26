@@ -1622,7 +1622,7 @@ pre {
 	visibility: hidden;
 	transition: max-height var(--durationNormal) var(--curveDecelerateMid),
 		opacity var(--durationFast);
-	padding-left: 44px;
+	padding-left: 32px;
 	margin: 0;
 	list-style: none;
 }
