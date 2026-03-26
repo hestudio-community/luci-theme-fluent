@@ -51,6 +51,11 @@
 	--colorNeutralStrokeAccessible: #616161;
 	--colorNeutralStrokeDisabled: #E0E0E0;
 
+	/* LuCI compatibility aliases */
+	--background-color-medium: var(--colorNeutralBackground1);
+	--text-color-high: var(--colorNeutralForeground1);
+	--border-color-medium: var(--colorNeutralStroke2);
+
 	/* Status */
 	--colorStatusDangerBackground1: #FDF3F4;
 	--colorStatusDangerBackground3: #C4314B;
