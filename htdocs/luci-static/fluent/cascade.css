@@ -3139,7 +3139,7 @@ a.label:hover {
 .cbi-dropdown[open] > ul.dropdown > li {
 	border-bottom: 1px solid var(--colorNeutralStroke3);
 	padding: 6px var(--spacingHorizontalM);
-	border-radius: var(--borderRadiusSmall);
+	border-radius: var(--borderRadiusMedium);
 }
 
 .cbi-dropdown[open] > ul.dropdown > li[selected] {
@@ -4015,7 +4015,7 @@ fluent-anchor-button {
 .fluent-enhanced-control.is-invalid {
 	outline: 2px solid var(--colorStatusDangerStroke1);
 	outline-offset: 2px;
-	border-radius: var(--borderRadiusLarge);
+	border-radius: var(--fluentFieldRadius, var(--borderRadiusMedium));
 }
 
 .fluent-enhanced-control.fluent-enhanced-switch-control {
@@ -4337,7 +4337,7 @@ body.auth-submitting .fluent-auth-form {
 	background: color-mix(in srgb, var(--colorNeutralBackground1) 92%, var(--colorNeutralBackground3));
 	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 82%, transparent);
 	border-bottom-color: var(--colorNeutralStrokeAccessible);
-	border-radius: var(--borderRadiusLarge);
+	border-radius: var(--borderRadiusMedium);
 	box-shadow: none;
 }
 
@@ -4370,7 +4370,7 @@ body.auth-submitting .fluent-auth-form {
 .cbi-dropdown[open] > ul.dropdown {
 	margin-top: 6px;
 	padding: 4px;
-	border-radius: var(--borderRadiusLarge);
+	border-radius: var(--borderRadiusMedium);
 	box-shadow: var(--shadow16);
 }
 
@@ -4554,9 +4554,12 @@ select.cbi-input-select,
 	--fluentFieldIndicatorInvalid: var(--colorStatusDangerForeground3);
 	--fluentFieldIndicatorDisabled: var(--colorNeutralStrokeDisabled);
 	--fluentFieldIndicatorReadonly: var(--colorNeutralStroke1);
-	--fluentFieldRadius: var(--borderRadiusLarge);
+	--fluentFieldRadius: var(--borderRadiusMedium);
 	--fluentFieldPaddingInline: var(--spacingHorizontalM);
 	--fluentFieldMinHeight: 36px;
+	--fluentFieldVisibleHeight: 32px;
+	--fluentFieldOuterInset: 2px;
+	--fluentFieldHostRadius: calc(var(--fluentFieldRadius) + var(--fluentFieldOuterInset));
 	--fluentFieldTransition: border-color var(--durationFast), background var(--durationFast), box-shadow var(--durationFast), color var(--durationFast);
 }
 
@@ -4569,6 +4572,7 @@ select.cbi-input-select,
 	background: var(--fluentFieldBackground);
 	border: 1px solid var(--fluentFieldBorder);
 	border-radius: var(--fluentFieldRadius);
+	box-sizing: border-box;
 	box-shadow: inset 0 -1px 0 0 var(--fluentFieldIndicator);
 	color: var(--colorNeutralForeground1);
 	transition: var(--fluentFieldTransition);
@@ -4579,7 +4583,9 @@ input.cbi-input-password,
 select.cbi-input-select,
 .cbi-select,
 .cbi-dropdown:not(.btn):not(.cbi-button) {
-	min-height: var(--fluentFieldMinHeight);
+	height: var(--fluentFieldVisibleHeight);
+	min-height: var(--fluentFieldVisibleHeight);
+	margin-block: var(--fluentFieldOuterInset);
 }
 
 input.cbi-input-text,
@@ -4643,12 +4649,17 @@ textarea.cbi-input-textarea {
 
 .cbi-dropdown:not(.btn):not(.cbi-button) > ul > li,
 .cbi-dropdown:not(.btn):not(.cbi-button)[open] > ul.dropdown > li {
-	min-height: var(--fluentFieldMinHeight);
-	padding: 8px var(--fluentFieldPaddingInline);
+	box-sizing: border-box;
+	min-height: var(--fluentFieldVisibleHeight);
+	padding: 0 var(--fluentFieldPaddingInline);
+	align-items: center;
 }
 
 .cbi-dropdown:not(.btn):not(.cbi-button) > .open {
 	width: 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	padding: 0;
 	color: var(--colorNeutralForeground3);
 	transition: color var(--durationFast);
