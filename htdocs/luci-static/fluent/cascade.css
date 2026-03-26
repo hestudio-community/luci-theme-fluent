@@ -1956,6 +1956,7 @@ input:focus, textarea:focus, select:focus {
 
 .cbi-dynlist > .add-item {
 	display: flex;
+	align-items: flex-start;
 }
 
 .cbi-dynlist > .add-item > .cbi-input-text.drag-over,
@@ -1969,6 +1970,15 @@ input:focus, textarea:focus, select:focus {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.cbi-dynlist > .add-item > .cbi-button-add,
+.cbi-dynlist > .add-item > .cbi-button-fieldadd {
+	box-sizing: border-box;
+	height: var(--fluentFieldVisibleHeight, 32px);
+	min-height: var(--fluentFieldVisibleHeight, 32px);
+	margin-block: var(--fluentFieldOuterInset, 2px);
+	align-self: flex-start;
 }
 
 .cbi-value-field > .cbi-checkbox,
