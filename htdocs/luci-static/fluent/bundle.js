@@ -95,6 +95,15 @@
 		nativeNode.removeAttribute('data-widget-id');
 	}
 
+	function hasReadySwitchIndicator(control) {
+		const shadowRoot = control?.shadowRoot;
+
+		if (!shadowRoot)
+			return false;
+
+		return !!shadowRoot.querySelector('[part~="checked-indicator"], [part="checked-indicator"], .checked-indicator');
+	}
+
 	function findDropdownListbox(control) {
 		return Array.from(control.children).find((child) =>
 			child.tagName === 'FLUENT-LISTBOX' && !child.hasAttribute('slot')) || null;
@@ -437,14 +446,47 @@
 					return;
 
 				host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-switch-control' });
+				host.hidden = true;
 
 				const control = create('fluent-switch');
+				let nativeHidden = false;
 				const syncFromNative = () => {
 					control.checked = !!input.checked;
 					syncBooleanAttr(control, 'checked', !!input.checked);
 					control.disabled = !!input.disabled;
 					syncBooleanAttr(control, 'disabled', !!input.disabled);
 					syncHostState(input, host);
+				};
+				const inputObserver = new MutationObserver(syncFromNative);
+				const cleanupFailedEnhancement = () => {
+					input.removeEventListener('change', syncFromNative);
+					input.removeEventListener('click', syncFromNative);
+					inputObserver.disconnect();
+					host?.remove();
+				};
+				const finalizeEnhancement = () => {
+					if (nativeHidden)
+						return;
+
+					syncFromNative();
+					transferWidgetId(input, control);
+					host.hidden = false;
+					hideNativeControl(input);
+					input.dataset.fluentEnhanced = 'true';
+					nativeHidden = true;
+				};
+				const waitForReadyState = (attempt) => {
+					if (hasReadySwitchIndicator(control)) {
+						finalizeEnhancement();
+						return;
+					}
+
+					if (attempt >= 12) {
+						cleanupFailedEnhancement();
+						return;
+					}
+
+					requestAnimationFrame(() => waitForReadyState(attempt + 1));
 				};
 
 				control.addEventListener('change', () => {
@@ -457,17 +499,15 @@
 				input.addEventListener('change', syncFromNative);
 				input.addEventListener('click', syncFromNative);
 
-				new MutationObserver(syncFromNative).observe(input, {
+				inputObserver.observe(input, {
 					attributes: true,
 					attributeFilter: ['class', 'disabled', 'checked']
 				});
 
-				transferWidgetId(input, control);
 				host.appendChild(control);
 				input.after(host);
 				syncFromNative();
-				hideNativeControl(input);
-				input.dataset.fluentEnhanced = 'true';
+				waitForReadyState(0);
 			}
 			catch (error) {
 				host?.remove();

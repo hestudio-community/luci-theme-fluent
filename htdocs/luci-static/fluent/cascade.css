@@ -35,10 +35,14 @@
 	--colorNeutralForeground1: #242424;
 	--colorNeutralForeground2: #424242;
 	--colorNeutralForeground3: #616161;
+	--colorNeutralForeground3Hover: #424242;
+	--colorNeutralForeground3Pressed: #424242;
 	--colorNeutralForeground4: #707070;
 	--colorNeutralForegroundDisabled: #BDBDBD;
 	--colorNeutralForegroundOnBrand: #FFFFFF;
 	--colorNeutralForegroundInverted: #FFFFFF;
+	--colorNeutralForegroundInvertedHover: #FFFFFF;
+	--colorNeutralForegroundInvertedPressed: #FFFFFF;
 
 	/* Neutral Strokes */
 	--colorNeutralStroke1: #D1D1D1;
@@ -190,10 +194,14 @@
 	--colorNeutralForeground1: #FFFFFF;
 	--colorNeutralForeground2: #D6D6D6;
 	--colorNeutralForeground3: #ADADAD;
+	--colorNeutralForeground3Hover: #D6D6D6;
+	--colorNeutralForeground3Pressed: #D6D6D6;
 	--colorNeutralForeground4: #999999;
 	--colorNeutralForegroundDisabled: #5C5C5C;
 	--colorNeutralForegroundOnBrand: #FFFFFF;
 	--colorNeutralForegroundInverted: #242424;
+	--colorNeutralForegroundInvertedHover: #242424;
+	--colorNeutralForegroundInvertedPressed: #242424;
 
 	--colorNeutralStroke1: #5C5C5C;
 	--colorNeutralStroke2: #404040;
@@ -3999,19 +4007,22 @@ fluent-switch:active {
 	border-color: var(--colorNeutralStrokeAccessiblePressed);
 }
 
-fluent-switch[checked] {
-	background: var(--colorBrandBackground);
-	border-color: var(--colorBrandBackground);
+fluent-switch[checked],
+fluent-switch[state--checked] {
+	background: var(--colorCompoundBrandBackground, var(--colorBrandBackground));
+	border-color: var(--colorCompoundBrandBackground, var(--colorBrandBackground));
 }
 
-fluent-switch[checked]:hover {
-	background: var(--colorBrandBackgroundHover);
-	border-color: var(--colorBrandBackgroundHover);
+fluent-switch[checked]:hover,
+fluent-switch[state--checked]:hover {
+	background: var(--colorCompoundBrandBackgroundHover, var(--colorBrandBackgroundHover));
+	border-color: var(--colorCompoundBrandBackgroundHover, var(--colorBrandBackgroundHover));
 }
 
-fluent-switch[checked]:active {
-	background: var(--colorBrandBackgroundPressed);
-	border-color: var(--colorBrandBackgroundPressed);
+fluent-switch[checked]:active,
+fluent-switch[state--checked]:active {
+	background: var(--colorCompoundBrandBackgroundPressed, var(--colorBrandBackgroundPressed));
+	border-color: var(--colorCompoundBrandBackgroundPressed, var(--colorBrandBackgroundPressed));
 }
 
 fluent-switch[disabled],
@@ -4021,7 +4032,9 @@ fluent-switch[readonly] {
 }
 
 fluent-switch[checked][disabled],
-fluent-switch[checked][readonly] {
+fluent-switch[checked][readonly],
+fluent-switch[state--checked][disabled],
+fluent-switch[state--checked][readonly] {
 	background: var(--colorNeutralBackgroundDisabled);
 	border-color: var(--colorNeutralStrokeDisabled);
 }
@@ -4074,7 +4087,6 @@ fluent-switch[checked][readonly] {
 }
 
 .fluent-enhanced-control.fluent-enhanced-switch-control {
-	--fluentFieldRadius: 999px;
 	display: inline-flex;
 	width: auto;
 	max-width: 100%;
@@ -4084,7 +4096,6 @@ fluent-switch[checked][readonly] {
 }
 
 .fluent-enhanced-control.fluent-enhanced-switch-control > fluent-switch {
-	display: inline-flex;
 	flex: 0 0 auto;
 	width: 40px;
 	min-width: 40px;
