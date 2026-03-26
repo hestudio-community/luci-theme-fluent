@@ -234,12 +234,45 @@ select,
 }
 
 .fluent-auth-card {
+	width: 100%;
+	border-radius: var(--borderRadiusXLarge);
+}
+
+.fluent-auth-showcase,
+.fluent-auth-panel {
 	padding: 22px;
-	border-radius: 18px;
+}
+
+.fluent-auth-showcase {
+	gap: 20px;
 }
 
 .fluent-auth-brand {
 	align-items: flex-start;
+	padding: 18px;
+}
+
+.fluent-auth-brand h1 {
+	font-size: 32px;
+}
+
+.fluent-auth-showcase-panel {
+	min-height: 156px;
+}
+
+.fluent-auth-panel-header > h2 {
+	font-size: 28px;
+}
+
+.fluent-auth-actions {
+	justify-content: flex-end;
+}
+
+.fluent-auth-actions > button.cbi-button,
+.fluent-auth-actions > .fluent-button-proxy,
+.fluent-auth-actions > .fluent-button-proxy > fluent-button {
+	width: auto;
+	min-width: 120px;
 }
 
 .cbi-page-actions {

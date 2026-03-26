@@ -8,49 +8,67 @@
 <div class="fluent-auth-shell">
 	<div class="fluent-auth-backdrop"></div>
 	<div class="fluent-auth-card">
-		<div class="fluent-auth-brand">
-			<img src="{{ media }}/logo.svg" alt="Logo" class="brand-logo">
-			<div>
-				<h1>LuCI</h1>
-				<p>{{ _('OpenWrt configuration interface') }}</p>
+		<div class="fluent-auth-showcase">
+			<div class="fluent-auth-brand">
+				<img src="{{ media }}/logo.svg" alt="Logo" class="brand-logo">
+				<div>
+					<h1>LuCI</h1>
+					<p>{{ _('OpenWrt configuration interface') }}</p>
+				</div>
 			</div>
+
+			<div class="fluent-auth-showcase-panel" aria-hidden="true"></div>
 		</div>
 
-		{% if (fuser): %}
-		<div class="alert-message error">
-			{{ _('Invalid username and/or password! Please try again.') }}
-		</div>
-		{% endif %}
+		<div class="fluent-auth-panel">
+			<div class="fluent-auth-panel-header">
+				<p class="fluent-auth-kicker">LuCI</p>
+				<h2>{{ _('Log in') }}</h2>
+				<p class="fluent-auth-panel-copy">{{ _('OpenWrt configuration interface') }}</p>
+			</div>
+
+			{% if (fuser): %}
+			<div class="alert-message error">
+				{{ _('Invalid username and/or password! Please try again.') }}
+			</div>
+			{% endif %}
 
 			<form method="post" class="fluent-auth-form" id="sysauth-form">
-				<div class="fluent-auth-field">
-					<label for="luci_username">{{ _('Username') }}</label>
-					<input
-						id="luci_username"
-						class="fluent-auth-input"
-						name="luci_username"
-						type="text"
-						placeholder="{{ _('Username') }}"
-						autocomplete="username"
-						autocapitalize="none"
-						value="{{ entityencode(duser, true) }}">
+				<div class="fluent-auth-fields">
+					<div class="fluent-auth-field">
+						<label for="luci_username">{{ _('Username') }}</label>
+						<input
+							id="luci_username"
+							class="cbi-input-text"
+							data-fluent-native-only
+							name="luci_username"
+							type="text"
+							placeholder="{{ _('Username') }}"
+							autocomplete="username"
+							autocapitalize="none"
+							value="{{ entityencode(duser, true) }}">
+					</div>
+
+					<div class="fluent-auth-field">
+						<label for="luci_password">{{ _('Password') }}</label>
+						<input
+							id="luci_password"
+							class="cbi-input-password"
+							data-fluent-native-only
+							name="luci_password"
+							type="password"
+							placeholder="{{ _('Password') }}"
+							autocomplete="current-password">
+					</div>
 				</div>
 
-				<div class="fluent-auth-field">
-					<label for="luci_password">{{ _('Password') }}</label>
-					<input
-						id="luci_password"
-						class="fluent-auth-input"
-						name="luci_password"
-						type="password"
-						placeholder="{{ _('Password') }}"
-						autocomplete="current-password">
+				<div class="fluent-auth-actions">
+					<button type="submit" id="login-submit" class="cbi-button cbi-button-action">
+						{{ _('Log in') }}
+					</button>
 				</div>
-
-				<button type="submit" id="login-submit" class="fluent-auth-submit">
-					{{ _('Log in') }}
-				</button>
 			</form>
+		</div>
 	</div>
 
 	<script>

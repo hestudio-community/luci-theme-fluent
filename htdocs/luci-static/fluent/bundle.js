@@ -403,7 +403,9 @@
 			return;
 
 		queryAllIncludingSelf(root, 'input.cbi-input-text, input.cbi-input-password').forEach((input) => {
-			if (input.dataset.fluentEnhanced || input.closest('.cbi-dropdown, .cbi-dynlist'))
+			if (input.dataset.fluentEnhanced ||
+				input.hasAttribute('data-fluent-native-only') ||
+				input.closest('.cbi-dropdown, .cbi-dynlist'))
 				return;
 
 			const host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-text-control' });

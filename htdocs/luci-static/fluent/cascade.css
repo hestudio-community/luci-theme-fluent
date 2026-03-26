@@ -4293,63 +4293,235 @@ fluent-switch[state--checked][readonly] {
 	min-height: 100vh;
 	display: grid;
 	place-items: center;
-	padding: 32px 16px;
+	padding: clamp(24px, 4vw, 48px) 16px;
+	overflow: hidden;
 	background:
-		radial-gradient(circle at top left, rgba(15, 108, 189, 0.16), transparent 28%),
-		radial-gradient(circle at bottom right, rgba(15, 108, 189, 0.14), transparent 32%),
-		linear-gradient(160deg, var(--colorNeutralBackground3), var(--colorNeutralBackground1));
+		radial-gradient(circle at top left, rgba(15, 108, 189, 0.2), transparent 30%),
+		radial-gradient(circle at bottom right, rgba(40, 112, 255, 0.18), transparent 34%),
+		linear-gradient(
+			155deg,
+			color-mix(in srgb, var(--colorBrandBackground) 10%, var(--colorNeutralBackground3)),
+			var(--colorNeutralBackground1) 58%
+		);
 }
 
 .fluent-auth-backdrop {
 	position: absolute;
 	inset: 0;
 	background:
-		linear-gradient(120deg, rgba(255, 255, 255, 0.15), transparent 45%),
-		linear-gradient(300deg, rgba(15, 108, 189, 0.08), transparent 55%);
+		radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.3), transparent 24%),
+		linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 44%),
+		repeating-linear-gradient(
+			135deg,
+			rgba(255, 255, 255, 0.08) 0,
+			rgba(255, 255, 255, 0.08) 1px,
+			transparent 1px,
+			transparent 28px
+		);
+	opacity: 0.9;
 	pointer-events: none;
 }
 
 .fluent-auth-card {
 	position: relative;
 	z-index: 1;
-	width: min(420px, 100%);
-	padding: 28px;
-	border-radius: 24px;
-	background: color-mix(in srgb, var(--colorNeutralBackground1) 88%, transparent);
-	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 65%, transparent);
+	display: grid;
+	grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+	width: min(960px, 100%);
+	border-radius: var(--borderRadiusXLarge);
+	overflow: hidden;
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 84%, transparent);
+	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 62%, transparent);
 	box-shadow: var(--shadow28);
 	backdrop-filter: blur(18px);
 }
 
 :root[data-darkmode="true"] .fluent-auth-card {
 	background: color-mix(in srgb, var(--colorNeutralBackground2) 86%, transparent);
+	border-color: color-mix(in srgb, var(--colorNeutralStroke1) 42%, transparent);
+}
+
+.fluent-auth-showcase {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 32px;
+	padding: clamp(28px, 4vw, 44px);
+	background:
+		radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.22), transparent 26%),
+		linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--colorBrandBackground) 14%, transparent),
+			color-mix(in srgb, var(--colorNeutralBackground3) 80%, transparent)
+		);
+	border-inline-end: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 42%, transparent);
+}
+
+:root[data-darkmode="true"] .fluent-auth-showcase {
+	background:
+		radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.12), transparent 24%),
+		linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--colorBrandBackground) 20%, transparent),
+			color-mix(in srgb, var(--colorNeutralBackground3) 54%, rgba(0, 0, 0, 0.16))
+		);
+}
+
+.fluent-auth-showcase::before {
+	content: "";
+	position: absolute;
+	right: -96px;
+	bottom: -124px;
+	width: 320px;
+	height: 320px;
+	border-radius: 50%;
+	background: radial-gradient(circle, color-mix(in srgb, var(--colorBrandBackground) 66%, white 34%), transparent 68%);
+	opacity: 0.72;
+	filter: blur(8px);
+}
+
+.fluent-auth-brand,
+.fluent-auth-showcase-panel {
+	position: relative;
+	z-index: 1;
 }
 
 .fluent-auth-brand {
 	display: flex;
 	align-items: center;
 	gap: var(--spacingHorizontalL);
-	margin-bottom: 24px;
+	padding: 18px 20px;
+	border-radius: var(--borderRadiusLarge);
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 54%, transparent);
+	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 36%, transparent);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.fluent-auth-brand > .brand-logo {
+	width: 56px;
+	height: 56px;
+	flex: 0 0 auto;
 }
 
 .fluent-auth-brand h1 {
-	font-size: 28px;
+	font-size: clamp(30px, 3vw, 40px);
 	line-height: 1.15;
+	letter-spacing: -0.02em;
+	margin: 0;
 	margin-bottom: 4px;
 }
 
 .fluent-auth-brand p {
+	margin: 0;
 	color: var(--colorNeutralForeground3);
+}
+
+.fluent-auth-showcase-panel {
+	min-height: 240px;
+	border-radius: var(--borderRadiusLarge);
+	overflow: hidden;
+	background:
+		linear-gradient(145deg, rgba(255, 255, 255, 0.18), transparent 52%),
+		color-mix(in srgb, var(--colorNeutralBackground1) 42%, transparent);
+	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 28%, transparent);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.fluent-auth-showcase-panel::before,
+.fluent-auth-showcase-panel::after {
+	content: "";
+	position: absolute;
+	border-radius: 50%;
+}
+
+.fluent-auth-showcase-panel::before {
+	top: -48px;
+	right: -28px;
+	width: 210px;
+	height: 210px;
+	background: radial-gradient(circle, rgba(255, 255, 255, 0.54), rgba(15, 108, 189, 0.24) 52%, transparent 72%);
+}
+
+.fluent-auth-showcase-panel::after {
+	left: 30px;
+	bottom: -64px;
+	width: 250px;
+	height: 250px;
+	background: radial-gradient(circle, rgba(255, 255, 255, 0.18), rgba(15, 108, 189, 0.16) 48%, transparent 70%);
+}
+
+.fluent-auth-panel {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 24px;
+	padding: clamp(28px, 4vw, 48px);
+	background: color-mix(in srgb, var(--colorNeutralBackground1) 86%, transparent);
+}
+
+:root[data-darkmode="true"] .fluent-auth-panel {
+	background: color-mix(in srgb, var(--colorNeutralBackground2) 78%, transparent);
+}
+
+.fluent-auth-panel-header {
+	display: grid;
+	gap: 8px;
+}
+
+.fluent-auth-kicker {
+	margin: 0;
+	font-size: var(--fontSizeBase200);
+	line-height: var(--lineHeightBase200);
+	font-weight: var(--fontWeightSemibold);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--colorBrandForeground1);
+}
+
+.fluent-auth-panel-header > h2 {
+	margin: 0;
+	font-size: clamp(30px, 3vw, 36px);
+	line-height: 1.08;
+	letter-spacing: -0.03em;
+}
+
+.fluent-auth-panel-copy {
+	margin: 0;
+	color: var(--colorNeutralForeground3);
+	font-size: var(--fontSizeBase300);
+	line-height: var(--lineHeightBase300);
+}
+
+.fluent-auth-panel > .alert-message {
+	margin: 0;
+	border: 1px solid var(--colorStatusDangerStroke1);
+	border-left-width: 4px;
+	border-left-color: var(--colorStatusDangerBackground3);
+	border-radius: var(--borderRadiusMedium);
+	background: var(--colorStatusDangerBackground1);
+	color: var(--colorNeutralForeground1);
 }
 
 .fluent-auth-form {
 	display: grid;
-	gap: 18px;
+	gap: 24px;
+}
+
+.fluent-auth-fields {
+	display: grid;
+	gap: 16px;
 }
 
 .fluent-auth-field {
 	display: grid;
 	gap: 8px;
+	--fluentFieldMinHeight: 40px;
+	--fluentFieldVisibleHeight: 36px;
+	--fluentFieldRadius: var(--borderRadiusMedium);
+	--fluentFieldPaddingInline: var(--spacingHorizontalM);
 }
 
 .fluent-auth-field > label {
@@ -4358,75 +4530,64 @@ fluent-switch[state--checked][readonly] {
 	color: var(--colorNeutralForeground2);
 }
 
-.fluent-auth-field > .fluent-auth-input {
+.fluent-auth-field > input.cbi-input-text,
+.fluent-auth-field > input.cbi-input-password,
+.fluent-auth-field > .fluent-enhanced-control {
 	width: 100%;
-	min-height: 46px;
-	padding: 0 14px;
-	border: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 72%, transparent);
-	border-radius: 14px;
-	background: color-mix(in srgb, var(--colorNeutralBackground1) 94%, transparent);
-	color: var(--colorNeutralForeground1);
-	font: inherit;
-	transition: border-color var(--durationFast), background var(--durationFast), box-shadow var(--durationFast);
-	appearance: none;
 }
 
-.fluent-auth-field > .fluent-auth-input:hover {
-	background: color-mix(in srgb, var(--colorNeutralBackground1Hover) 94%, transparent);
-}
-
-.fluent-auth-field > .fluent-auth-input:focus {
-	outline: none;
-	border-color: var(--colorBrandStroke1);
-	box-shadow: 0 0 0 3px color-mix(in srgb, var(--colorBrandBackground) 16%, transparent);
-}
-
-.fluent-auth-field > .fluent-auth-input::placeholder {
-	color: var(--colorNeutralForeground4);
-}
-
-.fluent-auth-field > .fluent-auth-input:disabled {
-	background: var(--colorNeutralBackgroundDisabled);
-	color: var(--colorNeutralForegroundDisabled);
-	cursor: not-allowed;
-}
-
-.fluent-auth-form > .fluent-auth-submit {
-	margin-top: 8px;
+.fluent-auth-field > .fluent-enhanced-control > fluent-text-input {
 	width: 100%;
-	min-height: 44px;
-	padding: 0 16px;
-	border: 0;
-	border-radius: 14px;
-	background: var(--colorBrandBackground);
-	color: var(--colorNeutralForegroundOnBrand);
-	font: inherit;
-	font-weight: var(--fontWeightSemibold);
-	cursor: pointer;
-	transition: background var(--durationFast), transform var(--durationFast);
+	min-height: var(--fluentFieldMinHeight);
+	border-radius: var(--fluentFieldRadius);
 }
 
-.fluent-auth-form > .fluent-auth-submit:hover {
-	background: var(--colorBrandBackgroundHover);
+.fluent-auth-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: var(--spacingHorizontalS);
 }
 
-.fluent-auth-form > .fluent-auth-submit:active {
-	background: var(--colorBrandBackgroundPressed);
+.fluent-auth-actions > button.cbi-button,
+.fluent-auth-actions > .fluent-button-proxy {
+	flex: 0 0 auto;
+	width: auto;
+	max-width: 100%;
 }
 
-.fluent-auth-form > .fluent-auth-submit:focus-visible {
-	outline: 2px solid var(--colorStrokeFocus2);
-	outline-offset: 2px;
+.fluent-auth-actions > button.cbi-button {
+	min-width: 120px;
+	min-height: 40px;
+	padding: 0 20px;
 }
 
-.fluent-auth-form > .fluent-auth-submit:disabled {
-	background: var(--colorNeutralBackgroundDisabled);
-	color: var(--colorNeutralForegroundDisabled);
-	cursor: not-allowed;
+.fluent-auth-actions > .fluent-button-proxy > fluent-button {
+	width: auto;
+	min-width: 120px;
+	min-height: 40px;
+	padding: 0 20px;
 }
 
 body.auth-submitting .fluent-auth-form {
 	pointer-events: none;
+}
+
+@media (max-width: 900px) {
+	.fluent-auth-card {
+		grid-template-columns: minmax(0, 1fr);
+		width: min(640px, 100%);
+	}
+
+	.fluent-auth-showcase {
+		gap: 24px;
+		border-inline-end: 0;
+		border-bottom: 1px solid color-mix(in srgb, var(--colorNeutralStroke1) 42%, transparent);
+	}
+
+	.fluent-auth-showcase-panel {
+		min-height: 180px;
+	}
 }
 
 /* ==========================================================================
