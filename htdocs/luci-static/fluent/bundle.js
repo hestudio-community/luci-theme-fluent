@@ -2,6 +2,10 @@
 	'use strict';
 
 	const proxyClass = 'fluent-native-proxy';
+	const nativeComboSelector = '.cbi-dropdown.btn, .cbi-dropdown.cbi-button';
+	const nativeComboOpenSelector = '.cbi-dropdown.btn[open], .cbi-dropdown.cbi-button[open]';
+	const nativeComboPlacementAttr = 'data-dropdown-placement';
+	const nativeComboObservedAttr = 'data-fluent-native-combo-observed';
 
 	function ready(fn) {
 		if (document.readyState === 'loading')
@@ -45,6 +49,133 @@
 			matches.push(...root.querySelectorAll(selector));
 
 		return matches;
+	}
+
+	function getViewportWidth() {
+		return Math.max(document.documentElement?.clientWidth ?? 0, window.innerWidth ?? 0);
+	}
+
+	function getNativeComboLeftBoundary() {
+		const sidebar = document.getElementById('sidebar');
+
+		if (!(sidebar instanceof Element))
+			return 8;
+
+		const style = window.getComputedStyle(sidebar);
+		const rect = sidebar.getBoundingClientRect();
+		const viewportWidth = getViewportWidth();
+
+		if (style.display === 'none' || style.visibility === 'hidden' ||
+			rect.width <= 0 || rect.right <= 0 || rect.left >= viewportWidth)
+			return 8;
+
+		return Math.max(8, rect.right + 8);
+	}
+
+	function resetNativeComboDropdownPlacement(dropdown) {
+		const menu = dropdown?.querySelector('ul');
+
+		dropdown?.removeAttribute(nativeComboPlacementAttr);
+
+		if (!(menu instanceof HTMLElement))
+			return;
+
+		menu.style.left = '';
+		menu.style.right = '';
+		menu.style.maxWidth = '';
+		menu.style.minWidth = '';
+	}
+
+	function positionNativeComboDropdown(dropdown) {
+		if (!(dropdown instanceof HTMLElement) || !dropdown.matches(nativeComboOpenSelector))
+			return;
+
+		const menu = dropdown.querySelector('ul');
+
+		if (!(menu instanceof HTMLElement))
+			return;
+
+		resetNativeComboDropdownPlacement(dropdown);
+
+		const viewportWidth = getViewportWidth();
+		const leftBoundary = getNativeComboLeftBoundary();
+		const rightBoundary = Math.max(leftBoundary, viewportWidth - 8);
+		const buttonRect = dropdown.getBoundingClientRect();
+		const preferredWidth = Math.max(menu.getBoundingClientRect().width, dropdown.offsetWidth, 180);
+		const spaceRight = Math.max(0, rightBoundary - buttonRect.left);
+		const spaceLeft = Math.max(0, buttonRect.right - leftBoundary);
+		const preferEnd = !!dropdown.closest('.cbi-page-actions, .actions, .td.cbi-section-actions');
+		const fitsStart = preferredWidth <= spaceRight;
+		const fitsEnd = preferredWidth <= spaceLeft;
+		let placement;
+
+		if (preferEnd) {
+			if (fitsEnd)
+				placement = 'end';
+			else if (fitsStart && spaceRight > spaceLeft)
+				placement = 'start';
+			else
+				placement = (spaceLeft >= spaceRight) ? 'clamp-end' : 'clamp-start';
+		}
+		else {
+			if (fitsStart)
+				placement = 'start';
+			else if (fitsEnd && spaceLeft > spaceRight)
+				placement = 'end';
+			else
+				placement = (spaceRight >= spaceLeft) ? 'clamp-start' : 'clamp-end';
+		}
+
+		if (placement === 'end' || placement === 'clamp-end') {
+			menu.style.left = 'auto';
+			menu.style.right = '0px';
+		}
+		else {
+			menu.style.left = '0px';
+			menu.style.right = 'auto';
+		}
+
+		if (placement === 'clamp-end' || placement === 'clamp-start') {
+			const availableWidth = Math.max(0, Math.floor(placement === 'clamp-end' ? spaceLeft : spaceRight));
+
+			menu.style.maxWidth = `${availableWidth}px`;
+			menu.style.minWidth = `${availableWidth}px`;
+		}
+
+		dropdown.setAttribute(nativeComboPlacementAttr, placement);
+	}
+
+	function enhanceNativeComboDropdowns(root) {
+		queryAllIncludingSelf(root, nativeComboSelector).forEach((dropdown) => {
+			if (!(dropdown instanceof HTMLElement) || dropdown.hasAttribute(nativeComboObservedAttr))
+				return;
+
+			dropdown.setAttribute(nativeComboObservedAttr, 'true');
+
+			new MutationObserver((records) => {
+				for (const record of records) {
+					if (record.type !== 'attributes' || record.attributeName !== 'open')
+						continue;
+
+					if (dropdown.hasAttribute('open'))
+						window.requestAnimationFrame(() => positionNativeComboDropdown(dropdown));
+					else
+						resetNativeComboDropdownPlacement(dropdown);
+				}
+			}).observe(dropdown, {
+				attributes: true,
+				attributeFilter: ['open']
+			});
+
+			if (dropdown.hasAttribute('open'))
+				window.requestAnimationFrame(() => positionNativeComboDropdown(dropdown));
+		});
+	}
+
+	function repositionOpenNativeComboDropdowns() {
+		document.querySelectorAll(nativeComboOpenSelector).forEach((dropdown) => {
+			positionNativeComboDropdown(dropdown);
+		});
 	}
 
 	function hideNativeControl(node) {
@@ -188,6 +319,11 @@
 	}
 
 	function resolveButtonVariant(node) {
+		if (node.closest('.cbi-page-actions') &&
+			(node.classList.contains('cbi-button-save') ||
+				node.classList.contains('cbi-button-reset')))
+			return 'secondary';
+
 		if (node.classList.contains('cbi-button-apply') ||
 			node.classList.contains('cbi-button-action') ||
 			node.classList.contains('cbi-button-edit') ||
@@ -704,6 +840,7 @@
 		runEnhancer('textareas', () => enhanceTextareas(root, capabilities));
 		runEnhancer('selects', () => enhanceSelects(root, capabilities));
 		runEnhancer('dropdowns', () => enhanceDropdowns(root, capabilities));
+		runEnhancer('native combo dropdowns', () => enhanceNativeComboDropdowns(root));
 		runEnhancer('checkboxes', () => enhanceCheckboxes(root, capabilities));
 		runEnhancer('buttons', () => enhanceButtons(root, capabilities));
 		runEnhancer('tabs', () => enhanceTabLists(root));
@@ -747,10 +884,27 @@
 		});
 	}
 
+	function observeViewport() {
+		let scheduled = false;
+
+		window.addEventListener('resize', () => {
+			if (scheduled)
+				return;
+
+			scheduled = true;
+
+			window.requestAnimationFrame(() => {
+				scheduled = false;
+				repositionOpenNativeComboDropdowns();
+			});
+		});
+	}
+
 	ready(() => {
 		syncThemeState();
 		enhanceRoot(document);
 		observeThemeState();
 		observeDom();
+		observeViewport();
 	});
 })();

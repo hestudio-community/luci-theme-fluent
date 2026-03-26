@@ -722,6 +722,15 @@ textarea[readonly] {
 	border-color: #9FD89F;
 }
 
+.cbi-page-actions .cbi-button-apply + .cbi-button-save,
+.cbi-page-actions .cbi-button-negative + .cbi-button-save,
+.cbi-page-actions .cbi-button-save,
+.cbi-page-actions .cbi-button-reset {
+	background: #FFFFFF;
+	color: #242424;
+	border-color: #C8C6C4;
+}
+
 .btn.large {
 	font-size: 16px;
 	border-radius: 8px;
@@ -2393,6 +2402,13 @@ textarea[readonly] {
 	--btn-border: var(--colorStatusDangerBackground3);
 }
 
+.cbi-page-actions .cbi-button-save,
+.cbi-page-actions .cbi-button-reset {
+	--btn-bg: var(--colorNeutralBackground1);
+	--btn-fg: var(--colorNeutralForeground1);
+	--btn-border: var(--colorNeutralStroke1);
+}
+
 .btn.large {
 	font-size: var(--fontSizeBase400);
 	line-height: normal;
@@ -3008,7 +3024,7 @@ a.label:hover {
 
 .cbi-dropdown.btn.spinning > ul:not(.dropdown),
 .cbi-dropdown.cbi-button.spinning > ul:not(.dropdown) {
-	padding-left: 32px;
+	padding-left: calc(var(--spinner-inline-start) + var(--spinner-size) + var(--spinner-inline-gap));
 }
 
 .cbi-dropdown > ul.preview {
@@ -3650,18 +3666,24 @@ div.cbi-value var.cbi-tooltip-container,
 }
 
 .spinning {
+	--spinner-size: 20px;
+	--spinner-half-size: 10px;
+	--spinner-inline-start: 6px;
+	--spinner-inline-gap: 6px;
+	--spinner-host-padding-left: calc(var(--spinner-inline-start) + var(--spinner-size) + var(--spinner-inline-gap));
+
 	position: relative;
-	padding-left: 32px !important;
+	padding-left: var(--spinner-host-padding-left) !important;
 }
 
 .spinning::before {
 	--spinner-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='%230F6CBD' stroke-width='2.5' fill='none'><circle cx='10' cy='10' r='8' stroke-opacity='.2'/><path d='M10 2c4 0 8 4 8 8'><animateTransform attributeName='transform' type='rotate' dur='1s' from='0 10 10' to='360 10 10' repeatCount='indefinite'/></path></svg>");
 
 	position: absolute;
-	top: calc(50% - 10px);
-	left: 6px;
-	width: 20px;
-	height: 20px;
+	top: calc(50% - var(--spinner-half-size));
+	left: var(--spinner-inline-start);
+	width: var(--spinner-size);
+	height: var(--spinner-size);
 	content: " ";
 	background: var(--spinner-icon) center/cover no-repeat;
 }
@@ -4478,9 +4500,38 @@ body.auth-submitting .fluent-auth-form {
 
 .cbi-dropdown.btn[open] > ul.dropdown,
 .cbi-dropdown.cbi-button[open] > ul.dropdown {
+	left: 0 !important;
+	right: auto !important;
+	min-width: max(100%, 180px);
+	opacity: 0;
+	transform: translateY(-4px);
+	transform-origin: top left;
+	transition: opacity var(--durationFast) var(--curveEasyEase),
+	            transform var(--durationFast) var(--curveEasyEase);
+}
+
+.cbi-dropdown.btn[open][data-dropdown-placement] > ul.dropdown,
+.cbi-dropdown.cbi-button[open][data-dropdown-placement] > ul.dropdown {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.cbi-dropdown.btn[open][data-dropdown-placement="end"] > ul.dropdown,
+.cbi-dropdown.btn[open][data-dropdown-placement="clamp-end"] > ul.dropdown,
+.cbi-dropdown.cbi-button[open][data-dropdown-placement="end"] > ul.dropdown,
+.cbi-dropdown.cbi-button[open][data-dropdown-placement="clamp-end"] > ul.dropdown {
+	transform-origin: top right;
+}
+
+.cbi-page-actions > .cbi-dropdown.btn[open] > ul.dropdown,
+.cbi-page-actions > .cbi-dropdown.cbi-button[open] > ul.dropdown,
+.actions > .cbi-dropdown.btn[open] > ul.dropdown,
+.actions > .cbi-dropdown.cbi-button[open] > ul.dropdown,
+.td.cbi-section-actions .cbi-dropdown.btn[open] > ul.dropdown,
+.td.cbi-section-actions .cbi-dropdown.cbi-button[open] > ul.dropdown {
 	left: auto !important;
 	right: 0 !important;
-	min-width: max(100%, 180px);
+	transform-origin: top right;
 }
 
 .cbi-dropdown.btn[open] > ul.dropdown > li,
@@ -4961,6 +5012,20 @@ select.cbi-input-select[readonly] {
 .cbi-button-positive.important,
 .cbi-button-save {
 	--spinner-color: var(--colorNeutralForegroundOnBrand);
+}
+
+button.spinning,
+.btn.spinning,
+.cbi-button.spinning {
+	--spinner-inline-start: var(--spacingHorizontalM, 12px);
+	--spinner-inline-gap: var(--spacingHorizontalM, 12px);
+}
+
+.cbi-dropdown.btn.spinning,
+.cbi-dropdown.cbi-button.spinning {
+	--spinner-inline-start: 14px;
+	--spinner-inline-gap: 14px;
+	--spinner-host-padding-left: 0px;
 }
 
 .spinning::before {
