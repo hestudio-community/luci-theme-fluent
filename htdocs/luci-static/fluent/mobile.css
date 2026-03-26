@@ -106,7 +106,7 @@ body.sidebar-collapsed .fluent-main {
 }
 
 /* Inputs full width */
-input,
+input:not([type="checkbox"]):not([type="radio"]),
 textarea,
 select,
 .cbi-select,
@@ -265,7 +265,7 @@ select,
 	width: 100%;
 }
 
-.fluent-enhanced-control:not(.fluent-enhanced-select-inline) {
+.fluent-enhanced-control:not(.fluent-enhanced-select-inline):not(.fluent-enhanced-switch-control) {
 	width: 100% !important;
 	max-width: 100%;
 }
@@ -275,6 +275,13 @@ select,
 .fluent-enhanced-control:not(.fluent-enhanced-select-inline) > fluent-dropdown {
 	width: 100%;
 	max-width: 100%;
+}
+
+.cbi-value label.cbi-value-title {
+	display: block;
+	min-height: 0;
+	justify-content: flex-start;
+	padding-top: 0;
 }
 
 .td.cbi-section-actions > div {

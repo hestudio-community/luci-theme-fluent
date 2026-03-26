@@ -1814,7 +1814,7 @@ select {
 	display: flex;
 	flex-wrap: wrap;
 	margin-bottom: var(--spacingHorizontalL);
-	align-items: baseline;
+	align-items: flex-start;
 }
 
 .cbi-value-field {
@@ -1823,7 +1823,11 @@ select {
 }
 
 .cbi-value label.cbi-value-title {
-	padding-top: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	min-height: var(--fluentFieldVisibleHeight, 32px);
+	padding-top: 0;
 	font-size: var(--fontSizeBase300);
 	line-height: var(--lineHeightBase300);
 	flex: 0 0 180px;
@@ -3971,6 +3975,57 @@ fluent-anchor-button {
 	padding: 0 var(--spacingHorizontalM, 12px);
 }
 
+fluent-switch {
+	display: inline-flex;
+	align-items: center;
+	flex-direction: row;
+	box-sizing: border-box;
+	width: 40px;
+	height: 20px;
+	padding: 0 var(--spacingHorizontalXXS, 2px);
+	background: transparent;
+	border: 1px solid var(--colorNeutralStrokeAccessible);
+	border-radius: 999px;
+	outline: none;
+	user-select: none;
+	cursor: pointer;
+}
+
+fluent-switch:hover {
+	border-color: var(--colorNeutralStrokeAccessibleHover);
+}
+
+fluent-switch:active {
+	border-color: var(--colorNeutralStrokeAccessiblePressed);
+}
+
+fluent-switch[checked] {
+	background: var(--colorBrandBackground);
+	border-color: var(--colorBrandBackground);
+}
+
+fluent-switch[checked]:hover {
+	background: var(--colorBrandBackgroundHover);
+	border-color: var(--colorBrandBackgroundHover);
+}
+
+fluent-switch[checked]:active {
+	background: var(--colorBrandBackgroundPressed);
+	border-color: var(--colorBrandBackgroundPressed);
+}
+
+fluent-switch[disabled],
+fluent-switch[readonly] {
+	border-color: var(--colorNeutralStrokeDisabled);
+	cursor: default;
+}
+
+fluent-switch[checked][disabled],
+fluent-switch[checked][readonly] {
+	background: var(--colorNeutralBackgroundDisabled);
+	border-color: var(--colorNeutralStrokeDisabled);
+}
+
 .fluent-native-proxy {
 	position: absolute !important;
 	width: 1px !important;
@@ -4019,9 +4074,11 @@ fluent-anchor-button {
 }
 
 .fluent-enhanced-control.fluent-enhanced-switch-control {
+	--fluentFieldRadius: 999px;
 	display: inline-flex;
 	width: auto;
 	max-width: 100%;
+	min-height: var(--fluentFieldVisibleHeight, 32px);
 	align-items: center;
 	vertical-align: middle;
 }
@@ -4029,6 +4086,11 @@ fluent-anchor-button {
 .fluent-enhanced-control.fluent-enhanced-switch-control > fluent-switch {
 	display: inline-flex;
 	flex: 0 0 auto;
+	width: 40px;
+	min-width: 40px;
+	height: 20px;
+	min-height: 20px;
+	align-self: center;
 }
 
 .fluent-button-proxy {
@@ -4477,21 +4539,21 @@ body.auth-submitting .fluent-auth-form {
 	min-width: 92px;
 }
 
-.cbi-checkbox {
+div.cbi-checkbox {
 	gap: var(--spacingHorizontalS);
 }
 
-.cbi-checkbox > label[for] {
+div.cbi-checkbox > label[for] {
 	display: none;
 }
 
-.cbi-checkbox > input[type="checkbox"] {
+div.cbi-checkbox > input[type="checkbox"] {
 	width: 40px;
 	height: 20px;
 	flex: 0 0 40px;
 }
 
-.cbi-checkbox > input[type="checkbox"]::before {
+div.cbi-checkbox > input[type="checkbox"]::before {
 	width: 40px;
 	height: 20px;
 	border-radius: 999px;
@@ -4499,30 +4561,31 @@ body.auth-submitting .fluent-auth-form {
 	border-color: color-mix(in srgb, var(--colorNeutralStrokeAccessible) 82%, transparent);
 }
 
-.cbi-checkbox > input[type="checkbox"]::after {
-	top: 1px;
+div.cbi-checkbox > input[type="checkbox"]::after {
+	top: 50%;
 	left: 1px;
 	width: 16px;
 	height: 16px;
 	border-radius: 50%;
 	background: var(--colorNeutralBackground1);
 	box-shadow: var(--shadow2);
+	transform: translateY(-50%);
 	transition: transform var(--durationNormal) var(--curveEasyEase), background var(--durationFast);
 }
 
-.cbi-checkbox > input[type="checkbox"]:checked::before {
+div.cbi-checkbox > input[type="checkbox"]:checked::before {
 	background: var(--colorBrandBackground);
 	border-color: var(--colorBrandBackground);
 }
 
-.cbi-checkbox > input[type="checkbox"]:checked::after {
-	transform: translateX(20px);
+div.cbi-checkbox > input[type="checkbox"]:checked::after {
+	transform: translate(20px, -50%);
 	background: var(--colorNeutralForegroundOnBrand);
 	-webkit-mask: none;
 	mask: none;
 }
 
-.cbi-checkbox > input[type="checkbox"]:focus-visible::before {
+div.cbi-checkbox > input[type="checkbox"]:focus-visible::before {
 	outline: 2px solid color-mix(in srgb, var(--colorBrandBackground) 28%, transparent);
 	outline-offset: 2px;
 }
@@ -4762,9 +4825,18 @@ select.cbi-input-select[readonly] {
 	max-width: 100%;
 }
 
+.cbi-value-field > div.cbi-checkbox,
+.cbi-value-field > .fluent-enhanced-control.fluent-enhanced-switch-control {
+	display: inline-flex;
+	align-items: center;
+	min-height: var(--fluentFieldVisibleHeight);
+	max-width: 100%;
+}
+
 .cbi-value-field > div + .cbi-value-description,
 .cbi-value-field > .cbi-value-description {
 	display: block;
+	flex-basis: 100%;
 	width: 100%;
 	margin-top: var(--spacingVerticalXS);
 }
@@ -4842,31 +4914,6 @@ select.cbi-input-select[readonly] {
 	opacity: 1;
 	height: auto;
 	overflow: visible;
-}
-
-.cbi-value:has(> .cbi-value-field > .cbi-checkbox),
-.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) {
-	align-items: center;
-}
-
-.cbi-value:has(> .cbi-value-field > .cbi-checkbox) > label.cbi-value-title,
-.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) > label.cbi-value-title {
-	padding-top: 0;
-}
-
-.cbi-value:has(> .cbi-value-field > .cbi-checkbox) > .cbi-value-field,
-.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) > .cbi-value-field {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	row-gap: var(--spacingVerticalXS);
-}
-
-.cbi-value:has(> .cbi-value-field > .cbi-checkbox) > .cbi-value-field > .cbi-checkbox,
-.cbi-value:has(> .cbi-value-field > div > .cbi-checkbox) > .cbi-value-field > div:first-child {
-	display: inline-flex;
-	align-items: center;
-	min-height: 32px;
 }
 
 .table,

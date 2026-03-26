@@ -85,6 +85,16 @@
 			node.removeAttribute(attr);
 	}
 
+	function transferWidgetId(nativeNode, control) {
+		const widgetId = nativeNode.getAttribute('data-widget-id');
+
+		if (!widgetId)
+			return;
+
+		control.setAttribute('data-widget-id', widgetId);
+		nativeNode.removeAttribute('data-widget-id');
+	}
+
 	function findDropdownListbox(control) {
 		return Array.from(control.children).find((child) =>
 			child.tagName === 'FLUENT-LISTBOX' && !child.hasAttribute('slot')) || null;
@@ -411,7 +421,59 @@
 	}
 
 	function enhanceCheckboxes(root, capabilities) {
-		return;
+		if (!capabilities.switches)
+			return;
+
+		queryAllIncludingSelf(root, 'div.cbi-checkbox > input[type="checkbox"]').forEach((input) => {
+			if (input.dataset.fluentEnhanced)
+				return;
+
+			let host = null;
+
+			try {
+				const frame = input.parentElement;
+
+				if (!frame)
+					return;
+
+				host = create('div', { class: 'fluent-enhanced-control fluent-enhanced-switch-control' });
+
+				const control = create('fluent-switch');
+				const syncFromNative = () => {
+					control.checked = !!input.checked;
+					syncBooleanAttr(control, 'checked', !!input.checked);
+					control.disabled = !!input.disabled;
+					syncBooleanAttr(control, 'disabled', !!input.disabled);
+					syncHostState(input, host);
+				};
+
+				control.addEventListener('change', () => {
+					input.checked = !!control.checked;
+					dispatch(input, 'click');
+					dispatch(input, 'change');
+				});
+
+				control.addEventListener('blur', () => dispatch(input, 'blur'));
+				input.addEventListener('change', syncFromNative);
+				input.addEventListener('click', syncFromNative);
+
+				new MutationObserver(syncFromNative).observe(input, {
+					attributes: true,
+					attributeFilter: ['class', 'disabled', 'checked']
+				});
+
+				transferWidgetId(input, control);
+				host.appendChild(control);
+				input.after(host);
+				syncFromNative();
+				hideNativeControl(input);
+				input.dataset.fluentEnhanced = 'true';
+			}
+			catch (error) {
+				host?.remove();
+				reportEnhancementError('checkbox', error, input);
+			}
+		});
 	}
 
 	function enhanceDropdowns(root, capabilities) {
