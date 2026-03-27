@@ -124,6 +124,8 @@
 	--sidebarWidth: 280px;
 	--sidebarCollapsedWidth: 48px;
 	--topbarHeight: 48px;
+	--fluentFieldDefaultWidth: 32rem;
+	--fluentFieldVisualWidth: 400px;
 
 	/* Stroke Widths */
 	--strokeWidthThin: 1px;
@@ -1842,6 +1844,7 @@ select {
 .cbi-value-field {
 	margin-left: var(--spacingHorizontalXL);
 	flex: 1;
+	min-width: 0;
 }
 
 .cbi-value label.cbi-value-title {
@@ -3382,6 +3385,34 @@ a.label:hover {
 	height: 24px;
 }
 
+@media screen and (min-width: 768px) {
+	#cbi-network-interface .cbi-section-table {
+		table-layout: fixed;
+	}
+
+	#cbi-network-interface .td[data-name="_ifacebox"] {
+		width: 24%;
+	}
+
+	#cbi-network-interface .td[data-name="_ifacebox"] .ifacebox {
+		margin: 0;
+		width: min(100%, 8.5rem);
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	#cbi-network-interface .td[data-name="_ifacestat"] {
+		min-width: 0;
+	}
+
+	#cbi-network-interface .td[data-name="_ifacestat"] > div {
+		min-width: 0;
+		white-space: normal;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+}
+
 .ifacebadge {
 	display: inline-block;
 	flex-direction: row;
@@ -4102,6 +4133,13 @@ fluent-switch[state--checked][readonly] {
 .fluent-enhanced-control > fluent-dropdown {
 	display: block;
 	width: 100%;
+}
+
+.fluent-enhanced-control.fluent-enhanced-text-control > fluent-text-input,
+.fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea,
+.fluent-enhanced-control.fluent-enhanced-select-control:not(.fluent-enhanced-select-inline) > fluent-dropdown {
+	max-width: 100%;
+	min-width: 0;
 }
 
 .fluent-enhanced-control.fluent-enhanced-select-inline {
@@ -5045,6 +5083,14 @@ select.cbi-input-select[readonly] {
 	transition: var(--fluentFieldTransition);
 }
 
+.fluent-enhanced-control.fluent-enhanced-text-control,
+.fluent-enhanced-control.fluent-enhanced-textarea-control,
+.fluent-enhanced-control.fluent-enhanced-select-control:not(.fluent-enhanced-select-inline) {
+	width: min(100%, var(--fluentFieldVisualWidth));
+	max-width: 100%;
+	min-width: 0;
+}
+
 .fluent-enhanced-control.fluent-enhanced-text-control > fluent-text-input,
 .fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea,
 .fluent-enhanced-control.fluent-enhanced-select-control > fluent-dropdown {
@@ -5055,12 +5101,14 @@ select.cbi-input-select[readonly] {
 }
 
 .fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea {
+	--inline-size: 100%;
 	min-height: 96px;
 	margin-bottom: var(--spacingVerticalXS);
 }
 
 .cbi-value-field > div {
 	max-width: 100%;
+	min-width: 0;
 }
 
 .cbi-value-field > div.cbi-checkbox,

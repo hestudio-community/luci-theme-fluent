@@ -301,6 +301,25 @@ select,
 .fluent-enhanced-control:not(.fluent-enhanced-select-inline):not(.fluent-enhanced-switch-control) {
 	width: 100% !important;
 	max-width: 100%;
+	min-width: 0;
+}
+
+.cbi-value > .cbi-value-field > div:has(> input.cbi-input-text),
+.cbi-value > .cbi-value-field > div:has(> input.cbi-input-password),
+.cbi-value > .cbi-value-field > div:has(> textarea.cbi-input-textarea),
+.cbi-value > .cbi-value-field > div:has(> select.cbi-input-select),
+.cbi-value > .cbi-value-field > div:has(> .cbi-select),
+.cbi-value > .cbi-value-field > div:has(> .cbi-dropdown:not(.btn):not(.cbi-button)),
+.cbi-value > .cbi-value-field > div:has(> .fluent-enhanced-control.fluent-enhanced-text-control),
+.cbi-value > .cbi-value-field > div:has(> .fluent-enhanced-control.fluent-enhanced-textarea-control),
+.cbi-value > .cbi-value-field > div:has(> .fluent-enhanced-control.fluent-enhanced-select-control:not(.fluent-enhanced-select-inline)),
+.cbi-value > .cbi-value-field > div:has(> .fluent-enhanced-control.fluent-enhanced-dropdown-control),
+.cbi-value > .cbi-value-field > div:has(> .control-group > input.cbi-input-text),
+.cbi-value > .cbi-value-field > div:has(> .control-group > input.cbi-input-password),
+.cbi-value > .cbi-value-field > div:has(> .control-group > select.cbi-input-select) {
+	width: 100% !important;
+	max-width: 100%;
+	min-width: 0;
 }
 
 .fluent-enhanced-control:not(.fluent-enhanced-select-inline) > fluent-text-input,
@@ -308,6 +327,11 @@ select,
 .fluent-enhanced-control:not(.fluent-enhanced-select-inline) > fluent-dropdown {
 	width: 100%;
 	max-width: 100%;
+	min-width: 0;
+}
+
+.fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea {
+	--inline-size: 100%;
 }
 
 .cbi-value label.cbi-value-title {
