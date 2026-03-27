@@ -3385,31 +3385,65 @@ a.label:hover {
 	height: 24px;
 }
 
-@media screen and (min-width: 768px) {
-	#cbi-network-interface .cbi-section-table {
-		table-layout: fixed;
+body[data-page="admin-network-network"] #cbi-network-interface {
+	--network-ifacebox-width: 100px;
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .th.cbi-section-actions,
+body[data-page="admin-network-network"] #cbi-network-interface .td.cbi-section-actions {
+	width: auto !important;
+	min-width: 0 !important;
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacestat"] {
+	min-width: 0;
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacestat"] > div {
+	min-width: 0;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox {
+	margin: 0;
+	width: var(--network-ifacebox-width);
+	min-width: var(--network-ifacebox-width);
+	max-width: var(--network-ifacebox-width);
+	flex: 0 0 var(--network-ifacebox-width);
+	box-sizing: border-box;
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox > .ifacebox-head,
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox > .ifacebox-body {
+	width: 100%;
+	min-width: 100%;
+	box-sizing: border-box;
+}
+
+@media screen and (min-width: 769px) {
+	body[data-page="admin-network-network"] #cbi-network-interface .cbi-section-table {
+		table-layout: auto;
 	}
 
-	#cbi-network-interface .td[data-name="_ifacebox"] {
-		width: 24%;
+	body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] {
+		width: 1%;
 	}
 
-	#cbi-network-interface .td[data-name="_ifacebox"] .ifacebox {
-		margin: 0;
-		width: min(100%, 8.5rem);
-		max-width: 100%;
-		box-sizing: border-box;
+	body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox {
+		width: var(--network-ifacebox-width);
 	}
 
-	#cbi-network-interface .td[data-name="_ifacestat"] {
-		min-width: 0;
-	}
-
-	#cbi-network-interface .td[data-name="_ifacestat"] > div {
-		min-width: 0;
+	body[data-page="admin-network-network"] #cbi-network-interface .td.cbi-section-actions {
 		white-space: normal;
-		overflow-wrap: anywhere;
-		word-break: break-word;
+	}
+
+	body[data-page="admin-network-network"] #cbi-network-interface .td.cbi-section-actions > div {
+		display: inline-flex;
+		max-width: 100%;
+		margin-inline-start: auto;
+		justify-content: flex-end;
 	}
 }
 
@@ -5106,9 +5140,20 @@ select.cbi-input-select[readonly] {
 	margin-bottom: var(--spacingVerticalXS);
 }
 
-.cbi-value-field > div {
+.cbi-value-field > div:not(.ifacebox) {
 	max-width: 100%;
 	min-width: 0;
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"].cbi-value-field {
+	width: 1%;
+	min-width: calc(var(--network-ifacebox-width) + (2 * var(--spacingHorizontalL)));
+}
+
+body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"].cbi-value-field > .ifacebox {
+	width: var(--network-ifacebox-width) !important;
+	min-width: var(--network-ifacebox-width) !important;
+	max-width: var(--network-ifacebox-width) !important;
 }
 
 .cbi-value-field > div.cbi-checkbox,
