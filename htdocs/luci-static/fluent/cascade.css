@@ -2273,7 +2273,8 @@ textarea[readonly] {
 
 @media screen and (min-width: 768px) {
 	#localtime {
-		width: 300px;
+		width: 400px;
+		max-width: 100%;
 	}
 }
 
