@@ -5298,6 +5298,34 @@ button.spinning,
 	background: var(--spinner-color, currentColor);
 }
 
+/* Save & apply waiting status modal */
+#modal_overlay > .modal.alert-message.notice.spinning {
+	--spinner-size: 18px;
+	--spinner-half-size: 9px;
+	--spinner-inline-start: var(--spacingHorizontalL);
+	--spinner-inline-gap: var(--spacingHorizontalM);
+	--spinner-host-padding-left: calc(var(--spinner-inline-start) + var(--spinner-size) + var(--spinner-inline-gap));
+
+	box-sizing: border-box;
+	width: calc(100% - (var(--spacingHorizontalL) * 2));
+	max-width: 560px;
+	min-width: 0;
+	padding: var(--spacingHorizontalL) var(--spacingHorizontalXL);
+	border: 1px solid var(--colorNeutralStroke1);
+	border-radius: var(--borderRadiusXLarge);
+	background: var(--colorNeutralBackground1);
+	box-shadow: var(--shadow16);
+	color: var(--colorNeutralForeground1);
+}
+
+#modal_overlay > .modal.alert-message.notice.spinning > h4:first-child:empty {
+	display: none;
+}
+
+#modal_overlay > .modal.alert-message.notice.spinning > p {
+	margin: 0;
+}
+
 .hidden,
 [hidden] {
 	display: none !important;
