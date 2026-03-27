@@ -5136,7 +5136,7 @@ select.cbi-input-select[readonly] {
 
 .fluent-enhanced-control.fluent-enhanced-textarea-control > fluent-textarea {
 	--inline-size: 100%;
-	min-height: 96px;
+	--min-block-size: 96px;
 	margin-bottom: var(--spacingVerticalXS);
 }
 
