@@ -5205,6 +5205,11 @@ button.spinning,
 	background: var(--spinner-color, currentColor);
 }
 
+.hidden,
+[hidden] {
+	display: none !important;
+}
+
 .cbi-section-actions .drag-handle {
 	display: inline-flex;
 	align-items: center;
