@@ -125,7 +125,7 @@
 	--sidebarCollapsedWidth: 48px;
 	--topbarHeight: 48px;
 	--fluentFieldDefaultWidth: 32rem;
-	--fluentFieldVisualWidth: 400px;
+	--fluentFieldVisualWidth: 300px;
 
 	/* Stroke Widths */
 	--strokeWidthThin: 1px;
@@ -1883,7 +1883,7 @@ select,
 .cbi-select,
 .cbi-dropdown:not(.btn):not(.cbi-button) {
 	display: inline-block;
-	width: 210px;
+	width: 300px;
 	padding: 5px var(--spacingHorizontalM);
 	background: var(--colorNeutralBackground1);
 	color: var(--colorNeutralForeground1);
@@ -1914,9 +1914,13 @@ input:focus, textarea:focus, select:focus {
 	box-shadow: none;
 }
 
-.cbi-dropdown:not(.btn):not(.cbi-button),
+.cbi-dropdown:not(.btn):not(.cbi-button) {
+	min-width: 300px;
+	max-width: 400px;
+}
+
 .cbi-dynlist {
-	min-width: 210px;
+	min-width: 300px;
 	max-width: 400px;
 	width: auto;
 }
@@ -1982,11 +1986,23 @@ input:focus, textarea:focus, select:focus {
 }
 
 .cbi-dynlist > .add-item > input,
+.cbi-dynlist > .add-item > .cbi-dropdown,
 .cbi-dynlist > .add-item > button {
 	flex: 1 1 auto;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.cbi-dynlist > .add-item > input,
+.cbi-dynlist > .add-item > .cbi-dropdown {
+	flex: 0 0 300px;
+	width: 300px;
+	min-width: 300px;
+}
+
+.cbi-dynlist > .add-item > button {
+	flex: 0 0 auto;
 }
 
 .cbi-dynlist > .add-item > .cbi-button-add,
@@ -2206,10 +2222,12 @@ input[type="radio"].cbi-input-invalid {
 
 .td > input[type=text],
 .td > input[type=password],
+.td > textarea,
 .td > select,
+.td > .cbi-select,
 .td > .cbi-dropdown:not(.btn):not(.cbi-button),
 .cbi-dynlist > .add-item > .cbi-dropdown {
-	width: 100%;
+	width: 300px;
 }
 
 ::placeholder {
@@ -2268,12 +2286,19 @@ textarea[readonly] {
 }
 
 .cbi-section-create > * > input {
-	width: 100%;
+	width: 300px;
+}
+
+.cbi-section-create > * > textarea,
+.cbi-section-create > * > select,
+.cbi-section-create > * > .cbi-select,
+.cbi-section-create > * > .cbi-dropdown:not(.btn):not(.cbi-button) {
+	width: 300px;
 }
 
 @media screen and (min-width: 768px) {
 	#localtime {
-		width: 400px;
+		width: 300px;
 		max-width: 100%;
 	}
 }
@@ -2528,9 +2553,10 @@ table table td,
 .table.cbi-section-table input[type="text"],
 .table.cbi-section-table textarea,
 .table.cbi-section-table select,
-.table.cbi-section-table .cbi-select {
-	width: 100%;
-	min-width: auto;
+.table.cbi-section-table .cbi-select,
+.table.cbi-section-table .cbi-dropdown:not(.btn):not(.cbi-button) {
+	width: 300px;
+	min-width: 300px;
 }
 
 .table.cbi-section-table .td.cbi-section-table-cell {
@@ -2539,8 +2565,9 @@ table table td,
 }
 
 .table.cbi-section-table .td.cbi-section-table-cell select,
-.table.cbi-section-table .td.cbi-section-table-cell .cbi-select {
-	width: inherit;
+.table.cbi-section-table .td.cbi-section-table-cell .cbi-select,
+.table.cbi-section-table .td.cbi-section-table-cell .cbi-dropdown:not(.btn):not(.cbi-button) {
+	width: 300px;
 }
 
 .td.cbi-section-actions {
@@ -3810,7 +3837,8 @@ div.cbi-value var.cbi-tooltip-container,
 }
 
 .cbi-filebrowser {
-	min-width: 210px;
+	width: 300px;
+	min-width: 300px;
 	max-width: 100%;
 	border: 1px solid var(--colorNeutralStroke1);
 	border-radius: var(--borderRadiusMedium);
@@ -4606,7 +4634,8 @@ fluent-switch[state--checked][readonly] {
 .fluent-auth-field > input.cbi-input-text,
 .fluent-auth-field > input.cbi-input-password,
 .fluent-auth-field > .fluent-enhanced-control {
-	width: 100%;
+	width: 300px;
+	max-width: 100%;
 }
 
 .fluent-auth-field > .fluent-enhanced-control > fluent-text-input {
