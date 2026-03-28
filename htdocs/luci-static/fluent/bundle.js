@@ -294,6 +294,10 @@
 		return item.innerText.trim();
 	}
 
+	function hasRichDropdownMarkup(dropdown) {
+		return !!dropdown?.querySelector('.hide-open, .hide-close');
+	}
+
 	function syncEnhancedDropdownValue(control, dropdown, attempt) {
 		const instance = getClassInstance(dropdown);
 		const selectedValue = instance?.getValue?.() ?? dropdown.value ?? '';
@@ -661,6 +665,7 @@
 		queryAllIncludingSelf(root, '.cbi-dropdown:not(.btn):not(.cbi-button)').forEach((dropdown) => {
 			if (dropdown.dataset.fluentEnhanced ||
 				dropdown.hasAttribute('multiple') ||
+				hasRichDropdownMarkup(dropdown) ||
 				dropdown.querySelector('.create-item-input') ||
 				dropdown.closest('.cbi-dynlist'))
 				return;

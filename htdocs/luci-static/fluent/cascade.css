@@ -5381,3 +5381,10 @@ button.spinning,
 	user-select: none !important;
 	-webkit-user-select: none !important;
 }
+
+/* Final override: modal alert messages should not render the alert side bar */
+.modal.alert-message,
+#modal_overlay > .modal.alert-message.notice.spinning {
+	border-left: none;
+	border-inline-start: none;
+}
