@@ -4634,8 +4634,7 @@ fluent-switch[state--checked][readonly] {
 .fluent-auth-field > input.cbi-input-text,
 .fluent-auth-field > input.cbi-input-password,
 .fluent-auth-field > .fluent-enhanced-control {
-	width: 300px;
-	max-width: 100%;
+	width: 100%;
 }
 
 .fluent-auth-field > .fluent-enhanced-control > fluent-text-input {
@@ -5151,6 +5150,15 @@ select.cbi-input-select[readonly] {
 .fluent-enhanced-control.fluent-enhanced-textarea-control,
 .fluent-enhanced-control.fluent-enhanced-select-control:not(.fluent-enhanced-select-inline) {
 	width: min(100%, var(--fluentFieldVisualWidth));
+	max-width: 100%;
+	min-width: 0;
+}
+
+.fluent-auth-field > .fluent-enhanced-control.fluent-enhanced-text-control,
+.fluent-auth-field > .fluent-enhanced-control.fluent-enhanced-textarea-control,
+.fluent-auth-field > .fluent-enhanced-control.fluent-enhanced-select-control:not(.fluent-enhanced-select-inline),
+.fluent-auth-field > .fluent-enhanced-control.fluent-enhanced-dropdown-control {
+	width: 100%;
 	max-width: 100%;
 	min-width: 0;
 }
