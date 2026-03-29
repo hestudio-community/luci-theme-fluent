@@ -1989,6 +1989,10 @@ input:focus, textarea:focus, select:focus {
 .cbi-dynlist > .add-item > .cbi-dropdown,
 .cbi-dynlist > .add-item > button {
 	flex: 1 1 auto;
+}
+
+.cbi-dynlist > .add-item > input,
+.cbi-dynlist > .add-item > button {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -3172,6 +3176,10 @@ a.label:hover {
 	position: relative;
 }
 
+.cbi-dynlist > .add-item > .cbi-dropdown[open] {
+	overflow: visible;
+}
+
 .cbi-dropdown[open] > ul.dropdown {
 	display: block;
 	background: var(--colorNeutralBackground1);
@@ -3413,28 +3421,28 @@ a.label:hover {
 	height: 24px;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface {
 	--network-ifacebox-width: 100px;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .th.cbi-section-actions,
-body[data-page="admin-network-network"] #cbi-network-interface .td.cbi-section-actions {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .th.cbi-section-actions,
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td.cbi-section-actions {
 	width: auto !important;
 	min-width: 0 !important;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacestat"] {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacestat"] {
 	min-width: 0;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacestat"] > div {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacestat"] > div {
 	min-width: 0;
 	white-space: normal;
 	overflow-wrap: anywhere;
 	word-break: break-word;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox {
 	margin: 0;
 	width: var(--network-ifacebox-width);
 	min-width: var(--network-ifacebox-width);
@@ -3443,31 +3451,31 @@ body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_i
 	box-sizing: border-box;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox > .ifacebox-head,
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox > .ifacebox-body {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox > .ifacebox-head,
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox > .ifacebox-body {
 	width: 100%;
 	min-width: 100%;
 	box-sizing: border-box;
 }
 
 @media screen and (min-width: 769px) {
-	body[data-page="admin-network-network"] #cbi-network-interface .cbi-section-table {
+	:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .cbi-section-table {
 		table-layout: auto;
 	}
 
-	body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] {
+	:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"] {
 		width: 1%;
 	}
 
-	body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox {
+	:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"] > .ifacebox {
 		width: var(--network-ifacebox-width);
 	}
 
-	body[data-page="admin-network-network"] #cbi-network-interface .td.cbi-section-actions {
+	:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td.cbi-section-actions {
 		white-space: normal;
 	}
 
-	body[data-page="admin-network-network"] #cbi-network-interface .td.cbi-section-actions > div {
+	:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td.cbi-section-actions > div {
 		display: inline-flex;
 		max-width: 100%;
 		margin-inline-start: auto;
@@ -4691,6 +4699,12 @@ body.auth-submitting .fluent-auth-form {
 	}
 }
 
+@media (max-width: 900px) and (max-height: 720px) {
+	.fluent-auth-card > .fluent-auth-showcase {
+		display: none;
+	}
+}
+
 /* ==========================================================================
    Fluent Runtime Overrides
    ========================================================================== */
@@ -5183,12 +5197,12 @@ select.cbi-input-select[readonly] {
 	min-width: 0;
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"].cbi-value-field {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"].cbi-value-field {
 	width: 1%;
 	min-width: calc(var(--network-ifacebox-width) + (2 * var(--spacingHorizontalL)));
 }
 
-body[data-page="admin-network-network"] #cbi-network-interface .td[data-name="_ifacebox"].cbi-value-field > .ifacebox {
+:is(body[data-page="admin-network"], body[data-page="admin-network-network"]) #cbi-network-interface .td[data-name="_ifacebox"].cbi-value-field > .ifacebox {
 	width: var(--network-ifacebox-width) !important;
 	min-width: var(--network-ifacebox-width) !important;
 	max-width: var(--network-ifacebox-width) !important;

@@ -4,7 +4,7 @@
 
 return baseclass.extend({
 	__init__() {
-		this.sidebarMediaQuery = window.matchMedia('(max-width: 768px)');
+		this.sidebarMediaQuery = window.matchMedia('(max-width: 1024px)');
 		this.setupSidebar();
 		ui.menu.load().then((tree) => this.render(tree));
 	},

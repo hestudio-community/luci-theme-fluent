@@ -8,9 +8,10 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=Fluent UI 2 Theme
 LUCI_DEPENDS:=+luci-base
-LUCI_DESCRIPTION:=A modern theme based on Microsoft Fluent UI 2 design system with sidebar navigation, card-based layout, and light/dark mode support.
+LUCI_DESCRIPTION:=A modern theme based on Microsoft Fluent UI 2 design system.
 # csstidy lowercases CSS custom property names and breaks var() references.
 LUCI_MINIFY_CSS:=0
+
 
 PKG_LICENSE:=Apache-2.0
 
