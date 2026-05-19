@@ -6,7 +6,7 @@
 {%
 	import { getuid, getspnam } from 'luci.core';
 
-	const boardinfo = ubus.call('system', 'board');
+	const boardinfo = ubus.call('system', 'board') ?? {};
 	const darkpref = (theme == 'fluent-dark' ? 'true' : (theme == 'fluent-light' ? 'false' : null));
 
 	http.prepare_content('text/html; charset=UTF-8');
@@ -39,13 +39,16 @@
 		{% if (css): %}
 		<style title="text/css">{{ css }}</style>
 		{% endif %}
+		{% if (blank_page): %}
+		<script src="{{ resource }}/luci.js"></script>
+		{% endif %}
 		<script src="{{ dispatcher.build_url('admin/translations', dispatcher.lang) }}"></script>
 		<script src="{{ resource }}/cbi.js"></script>
 		<script src="{{ media }}/vendor/web-components.min.js"></script>
 		<script src="{{ media }}/bundle.js"></script>
 	</head>
 
-	<body class="lang_{{ dispatcher.lang }} {{ entityencode(striptags(node?.title ?? ''), true) }}" data-page="{{ entityencode(join('-', ctx.request_path), true) }}">
+	<body class="lang_{{ dispatcher.lang }} {{ entityencode(striptags(dispatched?.title ?? node?.title ?? ''), true) }}" data-page="{{ entityencode(join('-', ctx?.request_path ?? []), true) }}">
 		{% if (!blank_page): %}
 		<div class="fluent-layout">
 			<aside class="fluent-nav" id="sidebar">
