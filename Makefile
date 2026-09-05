@@ -12,7 +12,8 @@ LUCI_DESCRIPTION:=A modern theme based on Microsoft Fluent UI 2 design system.
 # csstidy lowercases CSS custom property names and breaks var() references.
 LUCI_MINIFY_CSS:=0
 
-
+PKG_VERSION:=1.0
+PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 
 define Package/luci-theme-fluent/postrm
@@ -25,6 +26,6 @@ define Package/luci-theme-fluent/postrm
 }
 endef
 
-include ../../luci.mk
+include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
